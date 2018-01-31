@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge"> 
+        <link rel="stylesheet" href="/static/css/style.css" type="text/css">       
+        <title>Blog engine</title>
+        {% if state == "login" %}
+        <h1>LOGIN PAGE</h1>
+        {% endif %}
+        {% if state == "register" %}
+        <h1>REGISTRATION PAGE</h1>
+        {% endif %}
+    </head>
+    <body>
+        {% if message %}
+        {{ message }}
+        {% endif %}
+        {% if state == "login" %}
+        <form action="/login" method="POST">
+            <input type="username" name="username" class="textbox" placeholder="Username" required><br>
+            <input type="password" name="password" class="textbox" placeholder="Password" required><br>
+            <input type="submit" value="Login">
+        </form>
+        <form action="/" method="POST">
+        <input type="submit" name="register" value="Register">
+        </form>
+        {% endif %}
+        {% if state == "register" %}
+        <form action="/register" method="POST">
+            <input type="username" name="username" class="textbox" placeholder="Username" required><br>
+            <input type="password" name="password" class="textbox" placeholder="Password" required><br>
+            <input type="password" name="passwordcheck" class="textbox" placeholder="Password again" required><br>
+            <input type="submit" value="Register">
+            <button class="button" formmethod="GET" onclick="location.href='/'">Back</button>
+        </form>
+        {% endif %}
+    </body>
+</html>
