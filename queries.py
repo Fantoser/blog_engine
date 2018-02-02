@@ -41,12 +41,21 @@ def is_valid_login(cursor, username, password):
 
 
 # Functions for grab datas
+@data_manager.connection_handler
+def get_users(cursor):
+    cursor.execute("SELECT * FROM users")
+    data = cursor.fetchall()
+    return data
+
+
+@data_manager.connection_handler
 def get_blogs(cursor):
     cursor.execute("SELECT name, owner_id FROM blogs")
     data = cursor.fetchall()
     return data
 
 
+@data_manager.connection_handler
 def get_blogposts(cursor, blogID):
     cursor.execute("""SELECT * FROM blogposts
                     WHERE blog_id = %s;""", (blogID))
@@ -54,6 +63,7 @@ def get_blogposts(cursor, blogID):
     return data
 
 
+@data_manager.connection_handler
 def get_answers(cursor, blogpostID):
     cursor.execute("""SELECT * FROM answers
                     WHERE blogpost_id = %s;""", (blogpostID))
@@ -61,6 +71,7 @@ def get_answers(cursor, blogpostID):
     return data
 
 
+@data_manager.connection_handler
 def get_about(cursor, blogID):
     cursor.execute("""SELECT about FROM blogs
                     WHERE blog_id = %s;""", (blogID))
@@ -68,6 +79,7 @@ def get_about(cursor, blogID):
     return data
 
 
+@data_manager.connection_handler
 def get_contact(cursor, blogID):
     cursor.execute("""SELECT contact FROM blogs
                     WHERE blog_id = %s;""", (blogID))
@@ -75,12 +87,20 @@ def get_contact(cursor, blogID):
     return data
 
 
+@data_manager.connection_handler
 def get_links(cursor, blogID):
     cursor.execute("""SELECT links FROM blogs
                     WHERE blog_id = %s;""", (blogID))
     data = cursor.fetchall()
     return data
 
+
+@data_manager.connection_handler
+def givedata(cursor):
+    cursor.execute("""SELECT links FROM blogs
+                    WHERE blog_id = %s;""", (blogID))
+    data = cursor.fetchall()
+    return data
 
 ######################
 

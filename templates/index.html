@@ -9,13 +9,12 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 
-        <script src="{{ url_for('static', filename='js/data_handler.js') }}" defer></script>
         <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </head>
     <body>
             <nav class="navbar" style="background-color:rgb(254, 255, 175)">
-                <a class="navbar-brand"></a>
-                <div class="col"><h1>ProMan</h1></div>
+                <a class="navbar-nav"></a>
+                <div class="col"><h1>Blog engine</h1></div>
             </nav>
         <center>
             <div id="addModal" class="modal">
@@ -30,7 +29,7 @@
                         <button type="button" id="closeButton" class="btn">Close</button>
                     </div>
                 </div>
-            <div id="boards"></div>
+            <div id="content"></div>
         </center>
   
       

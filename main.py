@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session, url_for, send_from_directory
+from flask import Flask, render_template, redirect, request, session, url_for, send_from_directory, json
 import queries
 app = Flask(__name__)
 
@@ -54,6 +54,18 @@ def register():
 def main():
     username = session["username"]
     return render_template("index.html", username=username)
+
+
+@app.route("/get-blogs", methods=["GET"])
+def testing():
+    data = queries.get_blogs()
+    return json.dumps(data)
+
+
+@app.route("/get-blog/<id>", methods=["GET"])
+def get_blog(id):
+    data = queries.get_blogposts(id)
+    return json.dumps(data)
 
 
 def main():
