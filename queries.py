@@ -62,6 +62,13 @@ def get_blogposts(cursor, blogID):
     data = cursor.fetchall()
     return data
 
+@data_manager.connection_handler
+def get_blogpost(cursor, blogID):
+    cursor.execute("""SELECT * FROM blogposts
+                    WHERE id = %s;""", (blogID))
+    data = cursor.fetchall()
+    return data
+
 
 @data_manager.connection_handler
 def get_answers(cursor, blogpostID):
@@ -89,14 +96,6 @@ def get_contact(cursor, blogID):
 
 @data_manager.connection_handler
 def get_links(cursor, blogID):
-    cursor.execute("""SELECT links FROM blogs
-                    WHERE blog_id = %s;""", (blogID))
-    data = cursor.fetchall()
-    return data
-
-
-@data_manager.connection_handler
-def givedata(cursor):
     cursor.execute("""SELECT links FROM blogs
                     WHERE blog_id = %s;""", (blogID))
     data = cursor.fetchall()

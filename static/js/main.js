@@ -1,22 +1,25 @@
-function request(url) {
+function request(url,item) {
     var ourRequest = new XMLHttpRequest();
     ourRequest.open("GET", url)
     ourRequest.send();
     ourRequest.onload = function(){
         var result = JSON.parse(ourRequest.responseText);
-        switch(url){
-            case "/get-blogs":
+        switch(item){
+            case "blogs":
                 load_blogs(result)
                 break;
-            default:
+            case "blog":
                 load_blog(result)
+                break;
+            case "blogpost":
+                load_blogpost(result)
+                break;
         }
     }
 }
 
 function load_blogs(blogs){
 
-    console.log(blogs)
     var rowcounter = 0
     var content = document.getElementById("content")
     content.innerHTML=""
@@ -34,18 +37,18 @@ function load_blogs(blogs){
         var cell = row.insertCell(rowcounter);
         cell.setAttribute("align", "center")
 
-        var blogbutt = document.createElement("div")
-        blogbutt.setAttribute("class", "btn")
+        var blogButt = document.createElement("div")
+        blogButt.setAttribute("class", "btn")
+        blogButt.setAttribute("id", "blogButt")
 
-        BlogButtons(blogbutt, i)
+        BlogButtons(blogButt, i, blogs[i].name)
 
         var blogname = document.createTextNode(blogs[i].name)
 
-        blogbutt.appendChild(blogname)
-        cell.appendChild(blogbutt)
+        blogButt.appendChild(blogname)
+        cell.appendChild(blogButt)
 
         rowcounter++
-        console.log(rowcounter)
 
     }
 
@@ -54,14 +57,15 @@ function load_blogs(blogs){
 
 
 
-function BlogButtons(button, id) {
+function BlogButtons(button, id, blogName) {
     
-    content = document.getElementById("content");
+    var navTitle = document.getElementById("navTitle")
 
     function blogButtonEvent(){
 
-        var urlString = "/get_blog/" + id
-        request(urlString)
+        var urlString = "/get-blog/" + id
+        request(urlString, "blog")
+        navTitle.innerHTML = blogName
         
     }
     
@@ -70,8 +74,91 @@ function BlogButtons(button, id) {
 }
 
 
-function load_blog(blogpost){
+function load_blog(blogposts){
 
+
+    //Navigation bar
+    var navbar = document.getElementById("navButtons")
+
+    var aboutButton = document.createElement("span")
+    aboutButton.setAttribute("class", "btn")
+    aboutButton.setAttribute("id", "navButt")
+
+    var about = document.createTextNode("About")
+
+    var contactButton = document.createElement("span")
+    contactButton.setAttribute("class", "btn")
+    contactButton.setAttribute("id", "navButt")
+
+    var contact = document.createTextNode("Contact")
+
+    aboutButton.appendChild(about)
+    contactButton.appendChild(contact)
+    navbar.appendChild(aboutButton)
+    navbar.appendChild(contactButton)
+
+    //Page content
+    var content = document.getElementById("content")
+    content.innerHTML=""
+
+    for(i in blogposts){
+
+        var postBox = document.createElement("div")
+        postBox.setAttribute("class", "container")
+        postBox.setAttribute("id", "postBox")
+
+        var postTitleBox = document.createElement("div")
+        postTitleBox.setAttribute("class", "container")
+        postTitleBox.setAttribute("id", "postTitleBox")
+
+        var postTitle = document.createTextNode(blogposts[i].title)
+
+        var postMessageBox = document.createElement("div")
+        postMessageBox.setAttribute("class", "container")        
+        postMessageBox.setAttribute("id", "postMessage")
+
+        var postMessage = document.createTextNode(blogposts[i].message)
+
+        var postButton = document.createElement("a")
+        postButton.setAttribute("id", "postButton")
+        postButton.setAttribute("href", "#")
+        postButton.style.float = "right"
+
+        BlogPostButtons(postButton, blogposts[i].id)
+
+        var postButtonText = document.createTextNode("See answers")
+
+
+        postTitleBox.appendChild(postTitle)
+        postMessageBox.appendChild(postMessage)
+        postBox.appendChild(postTitleBox)
+        postBox.appendChild(postMessageBox)
+        postButton.appendChild(postButtonText)
+        postBox.appendChild(postButton)
+        content.appendChild(postBox)
+
+    }
 }
 
-window.addEventListener('load', request("/get-blogs"));
+function BlogPostButtons(button, id) {
+    
+    content = document.getElementById("content");
+
+    function blogpostButtonEvent(){
+
+        var urlString = "/get-blogpost/" + id
+        request(urlString, "blogpost")
+        
+    }
+    
+    button.addEventListener("click", blogpostButtonEvent);
+    
+}
+
+
+window.addEventListener('load', request("/get-blogs", "blogs"));
+
+/*            <nav class="navbar" id="navbar" style="background-color:rgb(254, 255, 175)">
+<span><h1 class="container" id="navTitle">Blog engine</h1></span>
+<span class="container" id="navButtons"></span>
+</nav>*/

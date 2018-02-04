@@ -12,7 +12,7 @@ def login_required(func):
 
 
 @app.route("/", methods=["GET", "POST"])
-def boards():
+def index():
     session.pop("username", None)
     state = "login"
     if request.method == "POST":
@@ -66,6 +66,15 @@ def testing():
 def get_blog(id):
     data = queries.get_blogposts(id)
     return json.dumps(data)
+
+
+@app.route("/get-blogpost/<id>", methods=["GET"])
+def get_blogpost(id):
+    blogpostdata = queries.get_blogpost(id)
+    answerdata = queries.get_answers(id)
+    blogpostdata.append(answerdata)
+    print(blogpostdata)
+    return json.dumps(blogpostdata)
 
 
 def main():

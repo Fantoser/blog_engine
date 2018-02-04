@@ -10,27 +10,28 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 
         <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+
     </head>
     <body>
-            <nav class="navbar" style="background-color:rgb(254, 255, 175)">
-                <a class="navbar-nav"></a>
-                <div class="col"><h1>Blog engine</h1></div>
-            </nav>
-        <center>
-            <div id="addModal" class="modal">
-                    <div id="modal-content">
-                        <form action="/add-story" method="post">
-                            <h3 id="modalTitle"></h3>
-                            <br>
-                            <input name="title" id="modalTextbox" type="text">
-                            <br>
-                            <button type="button" id="modalButton" class="btn"></button>
-                        </form> 
-                        <button type="button" id="closeButton" class="btn">Close</button>
-                    </div>
+      <nav class="navbar" id="navbar" style="background-color:rgb(254, 255, 175)">
+        <span><h1 class="container" id="navTitle">Blog engine</h1></span>
+        <div id="username"> {{session["username"]}} </div>
+        <span class="container" id="navButtons"></span>
+      </nav>
+        <div id="addModal" class="modal">
+                <div id="modal-content">
+                    <form action="/add-story" method="post">
+                        <h3 id="modalTitle"></h3>
+                        <br>
+                        <input name="title" id="modalTextbox" type="text">
+                        <br>
+                        <button type="button" id="modalButton" class="btn"></button>
+                    </form> 
+                    <button type="button" id="closeButton" class="btn">Close</button>
                 </div>
-            <div id="content"></div>
-        </center>
+            </div>
+        <div id="content" class="container"></div>
+
   
       
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
