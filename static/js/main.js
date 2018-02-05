@@ -66,6 +66,7 @@ function BlogButtons(button, id, blogName) {
         var urlString = "/get-blog/" + id
         request(urlString, "blog")
         navTitle.innerHTML = blogName
+        navTitle.addEventListener("click", blogButtonEvent);
         
     }
     
@@ -79,15 +80,16 @@ function load_blog(blogposts){
 
     //Navigation bar
     var navbar = document.getElementById("navButtons")
+    navbar.innerHTML = ""
 
     var aboutButton = document.createElement("span")
-    aboutButton.setAttribute("class", "btn")
+    aboutButton.setAttribute("class", "col")
     aboutButton.setAttribute("id", "navButt")
 
     var about = document.createTextNode("About")
 
     var contactButton = document.createElement("span")
-    contactButton.setAttribute("class", "btn")
+    contactButton.setAttribute("class", "col")
     contactButton.setAttribute("id", "navButt")
 
     var contact = document.createTextNode("Contact")
@@ -119,10 +121,9 @@ function load_blog(blogposts){
 
         var postMessage = document.createTextNode(blogposts[i].message)
 
-        var postButton = document.createElement("a")
-        postButton.setAttribute("id", "postButton")
-        postButton.setAttribute("href", "#")
-        postButton.style.float = "right"
+        var postButton = document.createElement("div")
+        postButton.setAttribute("id", "blogpostButton")
+        postButton.setAttribute("class", "col-md-12 text-right")
 
         BlogPostButtons(postButton, blogposts[i].id)
 
@@ -140,6 +141,7 @@ function load_blog(blogposts){
     }
 }
 
+
 function BlogPostButtons(button, id) {
     
     content = document.getElementById("content");
@@ -153,6 +155,93 @@ function BlogPostButtons(button, id) {
     
     button.addEventListener("click", blogpostButtonEvent);
     
+}
+
+
+function load_blogpost(blogpost){
+
+    var content = document.getElementById("content")
+    content.innerHTML=""
+
+    //Blogpost
+    var postBox = document.createElement("div")
+    postBox.setAttribute("class", "container")
+    postBox.setAttribute("id", "postBox")
+
+    var postTitleBox = document.createElement("div")
+    postTitleBox.setAttribute("class", "container")
+    postTitleBox.setAttribute("id", "postTitleBox")
+
+    var postTitle = document.createTextNode(blogpost[0].title)
+
+    var postMessageBox = document.createElement("div")
+    postMessageBox.setAttribute("class", "container")        
+    postMessageBox.setAttribute("id", "postMessage")
+
+    var postMessage = document.createTextNode(blogpost[0].message)
+
+    postTitleBox.appendChild(postTitle)
+    postMessageBox.appendChild(postMessage)
+    postBox.appendChild(postTitleBox)
+    postBox.appendChild(postMessageBox)
+    content.appendChild(postBox)
+
+
+    //Answers
+
+    var answersBox = document.createElement("div")
+    answersBox.setAttribute("class", "container")
+    answersBox.setAttribute("id", "answersBox")
+
+    var h2 = document.createElement("h2")
+    h2.setAttribute("id", "answerText")
+
+    var answers = document.createTextNode("Answers:")
+    
+    h2.appendChild(answers)
+    answersBox.appendChild(h2)
+
+
+    if(blogpost[1].length == 0){
+
+        var answerTextBox = document.createElement("div")
+        answerTextBox.setAttribute("class", "container")
+
+        var answerMessage = document.createTextNode("There's no comments yet")
+
+        answerTextBox.appendChild(answerMessage)
+        answersBox.appendChild(h2)
+        answersBox.appendChild(answerTextBox)
+
+    }else{
+
+        for(i in blogpost[1]){
+
+            var answerBox = document.createElement("div")
+            answerBox.setAttribute("class", "container")
+            answerBox.setAttribute("id", "answerBox")
+
+            var usernameBox = document.createElement("div")
+            usernameBox.setAttribute("class", "container")
+
+            var username = document.createTextNode(blogpost[1][i].username + ":")
+
+            var answerTextBox = document.createElement("div")
+            answerTextBox.setAttribute("class", "container")
+
+            var answerText = document.createTextNode(blogpost[1][i].message)
+
+            usernameBox.appendChild(username)
+            answerBox.appendChild(usernameBox)
+            answerTextBox.appendChild(answerText)
+            answerBox.appendChild(answerTextBox)
+            answersBox.appendChild(answerBox)
+
+        }
+    }
+
+    content.appendChild(answersBox)
+
 }
 
 

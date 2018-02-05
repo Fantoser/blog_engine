@@ -7,10 +7,11 @@ body
 {
 
     align-content: center;
+    margin-bottom: 80px;
 
 }
 
-.container
+.contai
 {
     justify-content: center;
     align-items: center;
@@ -84,22 +85,25 @@ td
     width: 100%;
 }
 
-.navbar-brand
+#navbar
 {
-    position: absolute;
     width: 100%;
-    left: 0;
+    min-height: 60px;
     text-align: center;
     margin:0 auto;
 }
 
-.navbar-toggle {
-    z-index:3;
+#navTitle
+{
+    cursor: pointer;
+    padding-top: 8px;
 }
 
-#navButt
+#navButtons
 {
-    margin: 5px;
+    height: 35px;
+    font-size: 25px;
+    cursor: pointer;
 }
 
 .modal
@@ -126,15 +130,40 @@ td
 }
 
 
+#blogpostButton
+{
+    cursor: pointer;
+    font-weight: bold;
+}
+
+
 #postBox
 {
-    background-color: rgba(255, 255, 255, 0.493);
+    background-color: rgb(190, 253, 228);
     padding: 20px;
     padding-top: 5px;
     align-self: center;
     margin-top: 30px;
     
 }
+
+#answersBox
+{
+    background-color: #FFFD87;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+#answerBox
+{
+    background-color: rgb(190, 253, 228);
+    padding: 20px;
+    padding-top: 5px;
+    align-self: center;
+    margin-top: 30px;
+    
+}
+
 
 #postTitleBox
 {
@@ -146,5 +175,5 @@ td
 
 #postMessageBox
 {
-    text-align: left;
+    text-align: justify;
 }

@@ -73,7 +73,6 @@ def get_blogpost(id):
     blogpostdata = queries.get_blogpost(id)
     answerdata = queries.get_answers(id)
     blogpostdata.append(answerdata)
-    print(blogpostdata)
     return json.dumps(blogpostdata)
 
 

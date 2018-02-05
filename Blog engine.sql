@@ -34,8 +34,9 @@ CREATE TABLE blogposts (
 
 CREATE TABLE answers (
     id integer NOT NULL,
-    owner_id integer,
     blogpost_id integer,
+    owner_id integer,
+    username text,
     message text
 );
 

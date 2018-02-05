@@ -13,11 +13,10 @@
 
     </head>
     <body>
-      <nav class="navbar" id="navbar" style="background-color:rgb(254, 255, 175)">
+      <div class="container-fluid" id="navbar" style="background-color:rgb(254, 255, 175)">
         <span><h1 class="container" id="navTitle">Blog engine</h1></span>
-        <div id="username"> {{session["username"]}} </div>
-        <span class="container" id="navButtons"></span>
-      </nav>
+        <div class="row-md-1" id="navButtons"></div>
+      </div>
         <div id="addModal" class="modal">
                 <div id="modal-content">
                     <form action="/add-story" method="post">
