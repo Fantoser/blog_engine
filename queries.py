@@ -50,7 +50,7 @@ def get_users(cursor):
 
 @data_manager.connection_handler
 def get_blogs(cursor):
-    cursor.execute("SELECT name, owner_id FROM blogs")
+    cursor.execute("SELECT * FROM blogs")
     data = cursor.fetchall()
     return data
 

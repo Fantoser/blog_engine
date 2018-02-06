@@ -5,16 +5,9 @@ body
 
 #content
 {
-
+    padding-top: 100px;
     align-content: center;
     margin-bottom: 80px;
-
-}
-
-.contai
-{
-    justify-content: center;
-    align-items: center;
 
 }
 
@@ -68,11 +61,6 @@ td
 
 }
 
-.row
-{
-    width: 50%;
-}
-
 .col
 {
     margin-top: 10px;
@@ -87,6 +75,7 @@ td
 
 #navbar
 {
+    position: fixed;
     width: 100%;
     min-height: 60px;
     text-align: center;
@@ -95,15 +84,20 @@ td
 
 #navTitle
 {
-    cursor: pointer;
-    padding-top: 8px;
+    padding-top: 5px;
+    margin-bottom: 0px;
 }
 
-#navButtons
+.navButt
 {
     height: 35px;
     font-size: 25px;
     cursor: pointer;
+}
+
+.navButt:hover
+{
+    text-decoration: underline;
 }
 
 .modal
@@ -129,13 +123,17 @@ td
     width: 20%;
 }
 
-
 #blogpostButton
 {
+    padding-right: 10px;
     cursor: pointer;
     font-weight: bold;
 }
 
+#blogpostButton:hover
+{
+    text-decoration: underline;
+}
 
 #postBox
 {
@@ -154,13 +152,19 @@ td
     margin-top: 20px;
 }
 
+#usernameBox
+{
+    font-weight: bold;
+    padding: 0px;
+}
+
 #answerBox
 {
     background-color: rgb(190, 253, 228);
-    padding: 20px;
+    padding-bottom: 10px;
     padding-top: 5px;
     align-self: center;
-    margin-top: 30px;
+    margin-top: 20px;
     
 }
 

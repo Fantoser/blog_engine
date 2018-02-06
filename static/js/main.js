@@ -41,7 +41,7 @@ function load_blogs(blogs){
         blogButt.setAttribute("class", "btn")
         blogButt.setAttribute("id", "blogButt")
 
-        BlogButtons(blogButt, i, blogs[i].name)
+        BlogButtons(blogButt, blogs[i])
 
         var blogname = document.createTextNode(blogs[i].name)
 
@@ -57,16 +57,18 @@ function load_blogs(blogs){
 
 
 
-function BlogButtons(button, id, blogName) {
+function BlogButtons(button, blog) {
     
     var navTitle = document.getElementById("navTitle")
 
     function blogButtonEvent(){
 
-        var urlString = "/get-blog/" + id
+        var urlString = "/get-blog/" + blog.id
         request(urlString, "blog")
-        navTitle.innerHTML = blogName
-        navTitle.addEventListener("click", blogButtonEvent);
+        navTitle.innerHTML = blog.name
+        Storage["id"] = blog.id
+        Storage["about"] = blog.about
+        Storage["contact"] = blog.contact
         
     }
     
@@ -82,28 +84,45 @@ function load_blog(blogposts){
     var navbar = document.getElementById("navButtons")
     navbar.innerHTML = ""
 
-    var aboutButton = document.createElement("span")
-    aboutButton.setAttribute("class", "col")
-    aboutButton.setAttribute("id", "navButt")
+    var blogpostsButton = document.createElement("span")
+    blogpostsButton.setAttribute("class", "col navButt")
+    blogpostsButton.setAttribute("id", "blogpostsButton")
 
-    var about = document.createTextNode("About")
+    var blogpostsText = document.createTextNode("Blogposts")
+
+    var aboutButton = document.createElement("span")
+    aboutButton.setAttribute("class", "col navButt")
+    aboutButton.setAttribute("id", "aboutButton")
+
+    var aboutText = document.createTextNode("About")
 
     var contactButton = document.createElement("span")
-    contactButton.setAttribute("class", "col")
-    contactButton.setAttribute("id", "navButt")
+    contactButton.setAttribute("class", "col navButt")
+    contactButton.setAttribute("id", "contactButton")
 
-    var contact = document.createTextNode("Contact")
+    var contactText = document.createTextNode("Contact")
 
-    aboutButton.appendChild(about)
-    contactButton.appendChild(contact)
+    var linksButton = document.createElement("span")
+    linksButton.setAttribute("class", "col navButt")
+    linksButton.setAttribute("id", "linksButton")
+
+    var linksText = document.createTextNode("Links")
+
+    blogpostsButton.appendChild(blogpostsText)
+    aboutButton.appendChild(aboutText)
+    contactButton.appendChild(contactText)
+
+    navbar.appendChild(blogpostsButton)
     navbar.appendChild(aboutButton)
     navbar.appendChild(contactButton)
+
+    navButtons(blogpostsButton, aboutButton, contactButton)
 
     //Page content
     var content = document.getElementById("content")
     content.innerHTML=""
 
-    for(i in blogposts){
+    for(i=blogposts.length-1; i>=0; i--){
 
         var postBox = document.createElement("div")
         postBox.setAttribute("class", "container")
@@ -121,9 +140,13 @@ function load_blog(blogposts){
 
         var postMessage = document.createTextNode(blogposts[i].message)
 
+        var postButtonBox = document.createElement("div")
+        postButtonBox.setAttribute("id", "postButtonBox")
+        postButtonBox.setAttribute("class", "row justify-content-end")
+
         var postButton = document.createElement("div")
         postButton.setAttribute("id", "blogpostButton")
-        postButton.setAttribute("class", "col-md-12 text-right")
+        postButton.setAttribute("class", "col-2.5")
 
         BlogPostButtons(postButton, blogposts[i].id)
 
@@ -135,10 +158,74 @@ function load_blog(blogposts){
         postBox.appendChild(postTitleBox)
         postBox.appendChild(postMessageBox)
         postButton.appendChild(postButtonText)
-        postBox.appendChild(postButton)
+        postButtonBox.appendChild(postButton)
+        postBox.appendChild(postButtonBox)
         content.appendChild(postBox)
 
     }
+}
+
+
+function navButtons(blogpostsButton, aboutButton, contactButton) {
+
+    var content = document.getElementById("content")
+
+    function blogpostsButtonEvent(){
+
+        var urlString = "/get-blog/" + Storage["id"]
+        request(urlString, "blog")
+    }
+
+    blogpostsButton.addEventListener("click", blogpostsButtonEvent);
+
+
+    function aboutButtonEvent(){
+    
+        infopage("About")
+
+    }
+        
+    aboutButton.addEventListener("click", aboutButtonEvent);
+
+
+    function contactButtonEvent(){
+        
+        infopage("Contact")
+
+    }
+        
+    contactButton.addEventListener("click", contactButtonEvent);
+
+}
+
+function infopage(info){
+    content.innerHTML = ""
+    
+    var postBox = document.createElement("div")
+    postBox.setAttribute("class", "container")
+    postBox.setAttribute("id", "postBox")
+
+    var postTitleBox = document.createElement("div")
+    postTitleBox.setAttribute("class", "container")
+    postTitleBox.setAttribute("id", "postTitleBox")
+
+    var postTitle = document.createTextNode(info)
+
+    var postMessageBox = document.createElement("div")
+    postMessageBox.setAttribute("class", "container")        
+    postMessageBox.setAttribute("id", "postMessage")
+
+    if(Storage[info.toLowerCase()] == null){
+        var postMessage = document.createTextNode("This page doesn't contain any information")
+    }else{
+        var postMessage = document.createTextNode(Storage[info.toLowerCase()])
+    }
+
+    postTitleBox.appendChild(postTitle)
+    postMessageBox.appendChild(postMessage)
+    postBox.appendChild(postTitleBox)
+    postBox.appendChild(postMessageBox)
+    content.appendChild(postBox)
 }
 
 
@@ -156,6 +243,7 @@ function BlogPostButtons(button, id) {
     button.addEventListener("click", blogpostButtonEvent);
     
 }
+
 
 
 function load_blogpost(blogpost){
@@ -223,6 +311,7 @@ function load_blogpost(blogpost){
 
             var usernameBox = document.createElement("div")
             usernameBox.setAttribute("class", "container")
+            usernameBox.setAttribute("id", "usernameBox")
 
             var username = document.createTextNode(blogpost[1][i].username + ":")
 

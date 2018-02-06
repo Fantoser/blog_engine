@@ -56,6 +56,7 @@ CREATE SEQUENCE blogs_id_seq
     NO MAXVALUE
     CACHE 1;
 
+
 CREATE SEQUENCE blogposts_id_seq
     START WITH 1
     INCREMENT BY 1
