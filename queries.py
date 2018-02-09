@@ -42,6 +42,13 @@ def is_valid_login(cursor, username, password):
 
 # Functions for grab datas
 @data_manager.connection_handler
+def get_userID(cursor, username):
+    cursor.execute("SELECT id FROM users WHERE username = (%s);", (username,))
+    data = cursor.fetchall()
+    return data[0]
+
+
+@data_manager.connection_handler
 def get_users(cursor):
     cursor.execute("SELECT * FROM users")
     data = cursor.fetchall()
@@ -50,7 +57,7 @@ def get_users(cursor):
 
 @data_manager.connection_handler
 def get_blogs(cursor):
-    cursor.execute("SELECT * FROM blogs")
+    cursor.execute("SELECT * FROM blogs ORDER BY id")
     data = cursor.fetchall()
     return data
 
@@ -58,7 +65,8 @@ def get_blogs(cursor):
 @data_manager.connection_handler
 def get_blogposts(cursor, blogID):
     cursor.execute("""SELECT * FROM blogposts
-                    WHERE blog_id = %s;""", (blogID))
+                    WHERE blog_id = %s
+                    ORDER BY id;""", (blogID))
     data = cursor.fetchall()
     return data
 
@@ -100,6 +108,13 @@ def get_links(cursor, blogID):
                     WHERE blog_id = %s;""", (blogID))
     data = cursor.fetchall()
     return data
+
+
+# Submit stuff
+@data_manager.connection_handler
+def submit_blog(cursor, title, userID):
+    cursor.execute("""INSERT INTO blogs (name, owner_id)
+                    VALUES (%s, %s);""", (title, userID))
 
 ######################
 

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, session, url_for, send_from_directory, json
+from werkzeug.utils import secure_filename
 import queries
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 
 def login_required(func):
@@ -56,8 +57,14 @@ def main():
     return render_template("index.html", username=username)
 
 
+@app.route("/get-userID", methods=["GET"])
+def get_userID():
+    userID = queries.get_userID(session["username"])
+    return json.dumps(userID)
+
+
 @app.route("/get-blogs", methods=["GET"])
-def testing():
+def get_blogs():
     data = queries.get_blogs()
     return json.dumps(data)
 
@@ -74,6 +81,13 @@ def get_blogpost(id):
     answerdata = queries.get_answers(id)
     blogpostdata.append(answerdata)
     return json.dumps(blogpostdata)
+
+
+@app.route("/submit-blog/<userid>", methods=["POST"])
+def submit_blog(userid):
+    title = request.form["title"]
+    queries.submit_blog(title, userid)
+    return redirect("/main")
 
 
 def main():

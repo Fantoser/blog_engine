@@ -5,6 +5,9 @@ function request(url,item) {
     ourRequest.onload = function(){
         var result = JSON.parse(ourRequest.responseText);
         switch(item){
+            case "userID":
+                userID(result)
+                break;
             case "blogs":
                 load_blogs(result)
                 break;
@@ -18,7 +21,46 @@ function request(url,item) {
     }
 }
 
+function openNav() {
+    document.getElementById("sidenav").style.width = "250px";
+}
+
+function closeNav() {
+    document.getElementById("sidenav").style.width = "0";
+}
+
+function userID(userID){
+    sessionStorage.userID = userID.id
+}
+
 function load_blogs(blogs){
+
+    request("/get-userID", "userID")
+
+    //Sidebar
+
+    var sideContent = document.getElementById("sideContent")
+
+    var sideButt = document.createElement("div")
+    sideButt.setAttribute("class", "btn rounded-0")
+    sideButt.setAttribute("id", "sideButt")
+
+    var sideButtText = document.createTextNode("Create New Blog")
+
+    myBlogsBox = document.createElement("a")
+    myBlogsBox.setAttribute("id", "myBlogsBox")
+
+    var myBlogsText = document.createTextNode("My Blogs:")
+    
+
+    sideButt.appendChild(sideButtText)
+    sideContent.appendChild(sideButt)
+    myBlogsBox.appendChild(myBlogsText)
+    sideContent.appendChild(myBlogsBox)
+
+    sideButton(sideButt)
+
+    //Content
 
     var rowcounter = 0
     var content = document.getElementById("content")
@@ -29,7 +71,7 @@ function load_blogs(blogs){
     var row = table.insertRow(0);
 
     for(i in blogs){
-        if (rowcounter == 3){
+        if (rowcounter == 5){
             table.appendChild(row)
             var row = table.insertRow(table.rows.length);
             rowcounter = 0
@@ -50,9 +92,25 @@ function load_blogs(blogs){
 
         rowcounter++
 
+
+        if(blogs[i].owner_id == sessionStorage.userID){
+
+            var sideButt = document.createElement("div")
+            sideButt.setAttribute("class", "btn rounded-0")
+            sideButt.setAttribute("id", "sideButt")
+        
+            var sideButtText = document.createTextNode(blogs[i].name)
+
+            sideButt.appendChild(sideButtText)
+            sideContent.appendChild(sideButt)
+
+            BlogButtons(sideButt, blogs[i])
+        }
+
     }
 
     content.appendChild(table)
+
 }
 
 
@@ -74,6 +132,18 @@ function BlogButtons(button, blog) {
     
     button.addEventListener("click", blogButtonEvent);
     
+}
+
+function sideButton(button){
+
+    function sideButtonEvent(){
+
+        load_newBlog()
+
+    }
+
+    button.addEventListener("click", sideButtonEvent);
+
 }
 
 
@@ -122,6 +192,8 @@ function load_blog(blogposts){
     var content = document.getElementById("content")
     content.innerHTML=""
 
+    var piclist = []
+
     for(i=blogposts.length-1; i>=0; i--){
 
         var postBox = document.createElement("div")
@@ -133,6 +205,17 @@ function load_blog(blogposts){
         postTitleBox.setAttribute("id", "postTitleBox")
 
         var postTitle = document.createTextNode(blogposts[i].title)
+
+        if(blogposts[i].img != null){
+
+        var imageBox = document.createElement("div")
+        imageBox.setAttribute("class", "container")
+        imageBox.setAttribute("id", "imageBox") 
+
+        var image = document.createElement("img")
+        image.setAttribute("src", "/static/pics/" + blogposts[i].img)
+        image.setAttribute("alt", blogposts[i].img)
+        }
 
         var postMessageBox = document.createElement("div")
         postMessageBox.setAttribute("class", "container")        
@@ -156,6 +239,10 @@ function load_blog(blogposts){
         postTitleBox.appendChild(postTitle)
         postMessageBox.appendChild(postMessage)
         postBox.appendChild(postTitleBox)
+        if(blogposts[i].img != null){
+            imageBox.appendChild(image)
+            postBox.appendChild(imageBox)
+        }
         postBox.appendChild(postMessageBox)
         postButton.appendChild(postButtonText)
         postButtonBox.appendChild(postButton)
@@ -241,7 +328,7 @@ function BlogPostButtons(button, id) {
     }
     
     button.addEventListener("click", blogpostButtonEvent);
-    
+
 }
 
 
@@ -262,6 +349,17 @@ function load_blogpost(blogpost){
 
     var postTitle = document.createTextNode(blogpost[0].title)
 
+    if(blogpost[0].img != null){
+        
+        var imageBox = document.createElement("div")
+        imageBox.setAttribute("class", "container")
+        imageBox.setAttribute("id", "imageBox") 
+
+        var image = document.createElement("img")
+        image.setAttribute("src", "/static/pics/" + blogpost[0].img)
+        image.setAttribute("alt", blogpost[0].img)
+    }
+
     var postMessageBox = document.createElement("div")
     postMessageBox.setAttribute("class", "container")        
     postMessageBox.setAttribute("id", "postMessage")
@@ -271,6 +369,10 @@ function load_blogpost(blogpost){
     postTitleBox.appendChild(postTitle)
     postMessageBox.appendChild(postMessage)
     postBox.appendChild(postTitleBox)
+    if(blogpost[0].img != null){
+        imageBox.appendChild(image)
+        postBox.appendChild(imageBox)
+    }
     postBox.appendChild(postMessageBox)
     content.appendChild(postBox)
 
@@ -330,6 +432,128 @@ function load_blogpost(blogpost){
     }
 
     content.appendChild(answersBox)
+
+}
+
+function load_newBlog(){
+    
+        var content = document.getElementById("content")
+        content.innerHTML=""
+    
+        var navTitle = document.getElementById("navTitle")
+        navTitle.innerHTML = "Create New Blog"
+    
+        var form = document.createElement("form")
+        form.setAttribute("action", "/submit-blog/"+sessionStorage.userID)
+        form.setAttribute("method", "post")
+        
+    
+        var titleTextBox = document.createElement("div")
+        titleTextBox.setAttribute("class", "container")
+        titleTextBox.setAttribute("id", "titleTextBox")
+    
+        var titleText = document.createTextNode("Title")
+    
+        var newTitleBox = document.createElement("div")
+        newTitleBox.setAttribute("class", "container")
+        newTitleBox.setAttribute("id", "newTitleBox")
+    
+        var newTitle = document.createElement("input")
+        newTitle.setAttribute("type", "text")
+        newTitle.setAttribute("name", "title")
+        newTitle.setAttribute("size", "80")
+        newTitle.setAttribute("id", "newTitle")
+    
+        var submitBox = document.createElement("div")
+        submitBox.setAttribute("class", "container")
+        submitBox.setAttribute("id", "submitBox")
+        
+    
+        var submit = document.createElement("button")
+        submit.setAttribute("class", "btn")
+        submit.innerHTML="Submit"
+    
+        titleTextBox.appendChild(titleText)
+        newTitleBox.appendChild(newTitle)
+    
+        submitBox.appendChild(submit)
+    
+        form.appendChild(titleTextBox)
+        form.appendChild(newTitleBox)
+        form.appendChild(submitBox)
+    
+        content.appendChild(form)
+    
+    }
+
+
+function load_newBlogPost(){
+
+    var content = document.getElementById("content")
+    content.innerHTML=""
+
+    var navTitle = document.getElementById("navTitle")
+    navTitle.innerHTML = "Create New Blog"
+
+    var form = document.createElement("form")
+    form.setAttribute("action", "/submit-blog")
+    form.setAttribute("method", "post")
+    
+
+    var titleTextBox = document.createElement("div")
+    titleTextBox.setAttribute("class", "container")
+    titleTextBox.setAttribute("id", "titleTextBox")
+
+    var titleText = document.createTextNode("Title")
+
+    var newTitleBox = document.createElement("div")
+    newTitleBox.setAttribute("class", "container")
+    newTitleBox.setAttribute("id", "newTitleBox")
+
+    var newTitle = document.createElement("input")
+    newTitle.setAttribute("type", "text")
+    newTitle.setAttribute("size", "80")
+    newTitle.setAttribute("id", "newTitle")
+
+    var postTextBox = document.createElement("div")
+    postTextBox.setAttribute("class", "container")
+    postTextBox.setAttribute("id", "postTextBox")
+
+    var postText = document.createTextNode("Message")
+
+    var newPostBox = document.createElement("div")
+    newPostBox.setAttribute("class", "container")
+    newPostBox.setAttribute("id", "newPostBox")
+
+    var newPost = document.createElement("textarea")
+    newPost.setAttribute("rows", "8")
+    newPost.setAttribute("cols", "80")
+    newPost.setAttribute("id", "newPost")
+
+    var submitBox = document.createElement("div")
+    submitBox.setAttribute("class", "container")
+    submitBox.setAttribute("id", "submitBox")
+    
+
+    var submit = document.createElement("button")
+    submit.setAttribute("class", "btn")
+    submit.innerHTML="Submit"
+
+    titleTextBox.appendChild(titleText)
+    newTitleBox.appendChild(newTitle)
+
+    postTextBox.appendChild(postText)
+    newPostBox.appendChild(newPost)
+
+    submitBox.appendChild(submit)
+
+    form.appendChild(titleTextBox)
+    form.appendChild(newTitleBox)
+    form.appendChild(postTextBox)
+    form.appendChild(newPostBox)
+    form.appendChild(submitBox)
+
+    content.appendChild(form)
 
 }
 

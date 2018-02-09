@@ -50,7 +50,7 @@ table
 
 table
 {
-    width: 40%;
+    width: 80%;
     background-color: rgba(0, 0, 0, 0);
 }
 
@@ -123,6 +123,73 @@ td
     width: 20%;
 }
 
+#sidenavOpener
+{
+    position: fixed;
+    background-color: #79b98900;
+    font-size: 30px;
+    padding: 8px;
+}
+
+#sidenavOpener:hover
+{
+    cursor: pointer;
+}
+
+.sidenav
+{
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #79b989;
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.5s;
+}
+
+.sidenav .closebtn
+{
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.sidenav a
+{
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #ffffff;
+    display: block;
+    transition: 0.5s;
+}
+
+#sideButt
+{
+    background-color: #87FFA7;
+    padding: 10px;
+    margin-top: 20px;
+    text-decoration: none;
+    font-size: 25px;
+    display: block;
+    transition: 0.5s;
+}
+
+#myBlogsBox
+{
+    padding-top: 30px;
+    padding-left: 10px;
+    font-size: 30px;
+    white-space: nowrap;
+    display: block;
+    transition: 0.5s;
+}
+
 #blogpostButton
 {
     padding-right: 10px;
@@ -130,7 +197,7 @@ td
     font-weight: bold;
 }
 
-#blogpostButton:hover
+#blogpostButton:hover, #sideButt:hover
 {
     text-decoration: underline;
 }
@@ -143,6 +210,20 @@ td
     align-self: center;
     margin-top: 30px;
     
+}
+
+#postMessage
+{
+    text-align: justify;
+    font-size: 20px;
+}
+
+#imageBox img, #newTitleBox input, #newPostBox textarea
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30px;
 }
 
 #answersBox
@@ -169,7 +250,7 @@ td
 }
 
 
-#postTitleBox
+#postTitleBox, #titleTextBox, #postTextBox, #submitBox
 {
     display: flex;
     font-size: 40px;
@@ -181,3 +262,4 @@ td
 {
     text-align: justify;
 }
+

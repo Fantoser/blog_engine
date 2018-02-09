@@ -13,10 +13,10 @@
 
     </head>
     <body>
-      <div class="container-fluid" id="navbar" style="background-color:rgb(254, 255, 175)">
+        <div class="container-fluid" id="navbar" style="background-color:rgb(254, 255, 175)">
         <span><h1 class="container" id="navTitle">Blog engine</h1></span>
         <div class="row-md-12" id="navButtons"></div>
-      </div>
+        </div>
         <div id="addModal" class="modal">
                 <div id="modal-content">
                     <form action="/add-story" method="post">
@@ -29,8 +29,15 @@
                     <button type="button" id="closeButton" class="btn">Close</button>
                 </div>
             </div>
-        <div id="content" class="container"></div>
+            <div onclick="openNav()" id=sidenavOpener>
+                <span>☰</span>
+            </div>
+        <div id="content" class="container-fluid"></div>
 
+        <div id="sidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <div id="sideContent"></div>
+        </div>
   
       
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
