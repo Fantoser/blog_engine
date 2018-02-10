@@ -42,8 +42,8 @@ def is_valid_login(cursor, username, password):
 
 # Functions for grab datas
 @data_manager.connection_handler
-def get_userID(cursor, username):
-    cursor.execute("SELECT id FROM users WHERE username = (%s);", (username,))
+def get_user(cursor, username):
+    cursor.execute("SELECT id, username FROM users WHERE username = (%s);", (username,))
     data = cursor.fetchall()
     return data[0]
 
@@ -116,6 +116,19 @@ def submit_blog(cursor, title, userID):
     cursor.execute("""INSERT INTO blogs (name, owner_id)
                     VALUES (%s, %s);""", (title, userID))
 
+
+@data_manager.connection_handler
+def submit_blogpost(cursor, title, message, blogID):
+    cursor.execute("""INSERT INTO blogposts (title, message, blog_id)
+                    VALUES (%s, %s, %s);""", (title, message, blogID))
+
+
+@data_manager.connection_handler
+def submit_answer(cursor, blogpostid, userid, username, message):
+    cursor.execute("""INSERT INTO answers (blogpost_id, owner_id, username, message)
+                    VALUES (%s, %s, %s, %s);""", (blogpostid, userid, username, message))
+
+
 ######################
 
 @data_manager.connection_handler
@@ -129,12 +142,6 @@ def edit_answer(cursor, ID, message):
     cursor.execute("""UPDATE answer
     SET message=%s
     WHERE id =%s""", (message, ID))
-
-
-@data_manager.connection_handler
-def submit_answer(cursor, ID, answer):
-    cursor.execute("""INSERT INTO answer (question_id, message)
-    VALUES (%s, %s);""", (ID, answer))
 
 
 @data_manager.connection_handler

@@ -57,9 +57,9 @@ def main():
     return render_template("index.html", username=username)
 
 
-@app.route("/get-userID", methods=["GET"])
+@app.route("/get-user", methods=["GET"])
 def get_userID():
-    userID = queries.get_userID(session["username"])
+    userID = queries.get_user(session["username"])
     return json.dumps(userID)
 
 
@@ -87,6 +87,24 @@ def get_blogpost(id):
 def submit_blog(userid):
     title = request.form["title"]
     queries.submit_blog(title, userid)
+    return redirect("/main")
+
+
+@app.route("/submit-blogpost/<blogid>", methods=["POST"])
+def submit_blogpost(blogid):
+    title = request.form["title"]
+    message = request.form["message"]
+    queries.submit_blogpost(title, message, blogid)
+    url = "/get-blog/" + blogid
+    return redirect("/main")
+
+
+@app.route("/test-form", methods=["POST"])
+def test_form():
+    jsonData = request.get_data()
+    data = eval(jsonData)
+    print(data)
+    queries.submit_answer(data[0], data[1], data[2], data[3])
     return redirect("/main")
 
 
