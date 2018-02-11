@@ -21,15 +21,11 @@ function request(url,item) {
     }
 }
 
-function send(url, data) {
-    var ourRequest = new XMLHttpRequest();
-    ourRequest.open("POST", url)
-    ourRequest.send(data);
-}
 
-function sendIt(data){
+
+function sendIt(url, data){
     var req = new XMLHttpRequest();
-    req.open("POST", "/test-form")
+    req.open("POST", url)
     req.send(data);
 }
 
@@ -47,18 +43,29 @@ function user(user){
 
 
 function sendAnswer(){
-    
+
     var blogpostID = sessionStorage.blogpostID
     var userid = sessionStorage.userID
     var username = sessionStorage.username
     var message = document.forms["answerForm"]["message"].value
 
-    sendIt(JSON.stringify([blogpostID, userid, username, message]))
+    sendIt("/test-form", JSON.stringify([blogpostID, userid, username, message]))
 
     var urlString = "/get-blogpost/" + blogpostID
     request(urlString, "blogpost")
 
 }
+
+function delete_blog(blogid){
+
+    url = "/delete-blog/" + blogid
+
+    sendIt(url, JSON.stringify(blogid))
+
+    var urlString = "/get-blogs"
+    request(urlString, "blogs")
+}
+
 
 
 //===========SIDEBAR EVENTS=============
@@ -81,7 +88,7 @@ function sideButtons_blogs(button, item){
     
     function sideButtonEvent(){
 
-        load_Add(item)
+        load_Add(item, null)
 
     }
 
@@ -132,6 +139,7 @@ function BlogButtons(button, blog) {
         var urlString = "/get-blog/" + blog.id
         request(urlString, "blog")
         navTitle.innerHTML = blog.name
+        sessionStorage.blogID = blog.id
         Storage["id"] = blog.id
         Storage["about"] = blog.about
         Storage["contact"] = blog.contact
@@ -139,6 +147,27 @@ function BlogButtons(button, blog) {
     }
     
     button.addEventListener("click", blogButtonEvent);
+    //editButton.addEventListener("click", editButtonEvent);
+    //deleteButton.addEventListener("click", deleteButtonEvent);
+    
+}
+
+function editDelButtons(editbutton, delbutton, blog){
+
+    function editButtonEvent(){
+        
+        load_Add("blogedit", blog)
+                
+    }
+    editbutton.addEventListener("click", editButtonEvent);
+
+
+    function delButtonEvent(){
+        console.log(blog.id)
+        delete_blog(blog.id)
+                
+    }
+    delbutton.addEventListener("click", delButtonEvent);
     
 }
 
@@ -180,6 +209,7 @@ function load_blogs(blogs){
     //Sidebar
 
     var sideContent = document.getElementById("sideContent")
+    sideContent.innerHTML=""
 
     var sideAddButt = document.createElement("div")
     sideAddButt.setAttribute("class", "btn rounded-0")
@@ -211,7 +241,7 @@ function load_blogs(blogs){
     var row = table.insertRow(0);
 
     for(i in blogs){
-        if (rowcounter == 2){
+        if (rowcounter == 3){
             table.appendChild(row)
             var row = table.insertRow(table.rows.length);
             rowcounter = 0
@@ -238,13 +268,36 @@ function load_blogs(blogs){
             var sideButt = document.createElement("div")
             sideButt.setAttribute("class", "btn rounded-0")
             sideButt.setAttribute("id", "sideButt")
+
+            var optBox = document.createElement("div")
+            optBox.setAttribute("class", "row")
+            optBox.setAttribute("id", "optBox")
+
+            var editButt = document.createElement("div")
+            editButt.setAttribute("class", "btn col rounded-0")
+            editButt.setAttribute("id", "sideEditButt")
+
+            var editButtText = document.createTextNode("Edit")            
+
+            var deleteButt = document.createElement("div")
+            deleteButt.setAttribute("class", "btn col rounded-0")
+            deleteButt.setAttribute("id", "sideDelButt")
+
+            var deleteButtText = document.createTextNode("Delete")            
         
             var sideButtText = document.createTextNode(blogs[i].name)
 
             sideButt.appendChild(sideButtText)
+            editButt.appendChild(editButtText)
+            deleteButt.appendChild(deleteButtText)
+            optBox.appendChild(editButt)
+            optBox.appendChild(deleteButt)
             sideContent.appendChild(sideButt)
+            sideContent.appendChild(optBox)
 
             BlogButtons(sideButt, blogs[i])
+            editDelButtons(editButt, deleteButt, blogs[i])
+
         }
 
     }
@@ -409,6 +462,8 @@ function load_blogpost(blogpost){
 
     sessionStorage.blogpostID = blogpost[0].id
 
+    document.documentElement.scrollTop = 0;
+
     var content = document.getElementById("content")
     content.innerHTML=""
 
@@ -535,7 +590,7 @@ function load_blogpost(blogpost){
 }
 
 
-function load_Add(item){
+function load_Add(item, blog){
     
     var content = document.getElementById("content")
     content.innerHTML=""
@@ -550,6 +605,9 @@ function load_Add(item){
             break;
         case "blogpost":
             form.setAttribute("action", "/submit-blogpost/"+sessionStorage.userID)
+            break;
+        case "blogedit":
+            form.setAttribute("action", "/edit-blogpost/"+blog.id)
             break;
     }
     form.setAttribute("method", "post")
@@ -570,6 +628,7 @@ function load_Add(item){
     newTitle.setAttribute("name", "title")
     newTitle.setAttribute("size", "80")
     newTitle.setAttribute("id", "newTitle")
+    if(item == "blogedit"){newTitle.setAttribute("value", blog.name)}
 
     if(item == "blogpost"){
 

@@ -103,8 +103,20 @@ def submit_blogpost(blogid):
 def test_form():
     jsonData = request.get_data()
     data = eval(jsonData)
-    print(data)
     queries.submit_answer(data[0], data[1], data[2], data[3])
+    return redirect("/main")
+
+
+@app.route("/edit-blogpost/<blogid>", methods=["POST"])
+def edit_blog(blogid):
+    name = request.form["title"]
+    queries.edit_blog(name, blogid)
+    return redirect("/main")
+
+
+@app.route("/delete-blog/<blogid>", methods=["POST"])
+def delete_blog(blogid):
+    queries.delete_blog(blogid)
     return redirect("/main")
 
 

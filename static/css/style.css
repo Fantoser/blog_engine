@@ -182,6 +182,28 @@ td
     transition: 0.5s;
 }
 
+#optBox
+{
+    display: flex
+}
+
+#sideEditButt
+{
+    transition: 0.4s;
+    background-color: rgb(163, 255, 135);
+    margin-top: 0px;
+    white-space: nowrap;
+}
+
+#sideDelButt
+{
+    transition: 0.4s;
+    background-color: rgb(255, 135, 135);
+    margin-top: 0px;
+    white-space: nowrap;
+    
+}
+
 #myBlogsBox
 {
     padding-top: 30px;
@@ -199,7 +221,7 @@ td
     font-weight: bold;
 }
 
-#blogpostButton:hover, #sideButt:hover, #sideAddButt:hover
+#blogpostButton:hover, #sideButt:hover, #sideAddButt:hover, #sideEditButt:hover, #sideDelButt:hover
 {
     text-decoration: underline;
 }

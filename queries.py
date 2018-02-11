@@ -129,6 +129,19 @@ def submit_answer(cursor, blogpostid, userid, username, message):
                     VALUES (%s, %s, %s, %s);""", (blogpostid, userid, username, message))
 
 
+@data_manager.connection_handler
+def edit_blog(cursor, name, blogid):
+    cursor.execute("""UPDATE blogs
+    SET name=%s
+    WHERE id =%s""", (name, blogid))
+
+
+@data_manager.connection_handler
+def delete_blog(cursor, blogid):
+    cursor.execute("""DELETE FROM blogs
+    WHERE id =%s""", (blogid,))
+
+
 ######################
 
 @data_manager.connection_handler
