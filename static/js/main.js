@@ -42,6 +42,31 @@ function user(user){
 }
 
 
+function submit_blog(){
+
+    var title = document.forms["submitBlogForm"]["title"].value
+
+    url = "/submit-blog/" + sessionStorage.userID
+
+    sendIt(url, JSON.stringify(title))
+
+    var urlString = "/get-blogs"
+    request(urlString, "blogs")
+}
+
+function submit_blogpost(){
+    
+        var title = document.forms["submitBlogpostForm"]["title"].value
+        var message = document.forms["submitBlogpostForm"]["message"].value
+    
+        url = "/submit-blogpost/" + sessionStorage.blogID
+    
+        sendIt(url, JSON.stringify([title, message]))
+    
+        var urlString = "/get-blog/" + sessionStorage.blogID
+        request(urlString, "blog")
+    }
+
 function sendAnswer(){
 
     var blogpostID = sessionStorage.blogpostID
@@ -66,6 +91,29 @@ function delete_blog(blogid){
     request(urlString, "blogs")
 }
 
+function delete_post(postid){
+    
+    url = "/delete-blogpost/" + postid
+
+    sendIt(url, JSON.stringify(postid))
+
+    var urlString = "/get-blog/" + sessionStorage.blogID
+    request(urlString, "blog")
+}
+
+function edit_post(data){
+
+    var title = document.forms["editPostForm"]["title"].value
+    var message = document.forms["editPostForm"]["message"].value
+
+    url = "/edit-blogpost/" + data
+
+    sendIt(url, JSON.stringify([title, message]))
+
+    var urlString = "/get-blogpost/" + data
+    request(urlString, "blogpost")
+    
+}
 
 
 //===========SIDEBAR EVENTS=============
@@ -92,6 +140,7 @@ function sideButtons_blogs(button, item){
 
     }
 
+    button.removeEventListener("click", sideButtonEvent);
     button.addEventListener("click", sideButtonEvent);
     
 }
@@ -140,6 +189,7 @@ function BlogButtons(button, blog) {
         request(urlString, "blog")
         navTitle.innerHTML = blog.name
         sessionStorage.blogID = blog.id
+        sessionStorage.ownerID = blog.owner_id
         Storage["id"] = blog.id
         Storage["about"] = blog.about
         Storage["contact"] = blog.contact
@@ -152,22 +202,48 @@ function BlogButtons(button, blog) {
     
 }
 
-function editDelButtons(editbutton, delbutton, blog){
+function editDelButtons(editbutton, delbutton, item, data){
 
-    function editButtonEvent(){
+    function editBlog(){
         
-        load_Add("blogedit", blog)
+        load_Add("blogedit", data)
                 
     }
-    editbutton.addEventListener("click", editButtonEvent);
 
-
-    function delButtonEvent(){
-        console.log(blog.id)
-        delete_blog(blog.id)
+    function editPost(){
+        
+        load_Add("postedit", data)
                 
     }
-    delbutton.addEventListener("click", delButtonEvent);
+    switch(item){
+        case "blogedit":
+            editbutton.addEventListener("click", editBlog);
+            break;
+        case "postedit":
+            editbutton.addEventListener("click", editPost);
+            break;
+    }
+
+
+    function deleteBlog(){
+
+        delete_blog(data.id)
+                
+    }
+    function deletePost(){
+        
+        delete_post(data.id)
+                        
+    }
+    switch(item){
+        case "blogedit":
+            delbutton.addEventListener("click", deleteBlog);
+            break;
+        case "postedit":
+            delbutton.addEventListener("click", deletePost);
+            break;
+    }
+
     
 }
 
@@ -220,7 +296,7 @@ function load_blogs(blogs){
     myBlogsBox = document.createElement("a")
     myBlogsBox.setAttribute("id", "myBlogsBox")
 
-    var myBlogsText = document.createTextNode("My Blogs:")
+    var myBlogsText = document.createTextNode("My Blog(s):")
     
 
     sideAddButt.appendChild(sideButtText)
@@ -296,7 +372,7 @@ function load_blogs(blogs){
             sideContent.appendChild(optBox)
 
             BlogButtons(sideButt, blogs[i])
-            editDelButtons(editButt, deleteButt, blogs[i])
+            editDelButtons(editButt, deleteButt, "blogedit", blogs[i])
 
         }
 
@@ -316,8 +392,11 @@ function load_blog(blogposts){
 
     var sideAddButt = document.getElementById("sideAddButt")
     sideAddButt.innerHTML = "Create New Blogpost"
-
+    if(sessionStorage.ownerID == sessionStorage.userID){
     sideButtons_blogs(sideAddButt, "blogpost")
+    }else{
+        sideContent.removeChild(sideAddButt)
+    }
 
 
 
@@ -378,6 +457,20 @@ function load_blog(blogposts){
 
         var postTitle = document.createTextNode(blogposts[i].title)
 
+        var editButt = document.createElement("div")
+        editButt.setAttribute("class", "btn col rounded-0")
+        editButt.setAttribute("id", "postEditButt")
+        editButt.innerHTML="Edit"
+
+        var editButtText = document.createTextNode("Edit")            
+
+        var deleteButt = document.createElement("div")
+        deleteButt.setAttribute("class", "btn col rounded-0")
+        deleteButt.setAttribute("id", "postDelButt")
+        deleteButt.innerHTML="Delete"
+
+        var deleteButtText = document.createTextNode("Delete")            
+
         if(blogposts[i].img != null){
 
         var imageBox = document.createElement("div")
@@ -419,6 +512,11 @@ function load_blog(blogposts){
         postButton.appendChild(postButtonText)
         postButtonBox.appendChild(postButton)
         postBox.appendChild(postButtonBox)
+        if(sessionStorage.userID == sessionStorage.ownerID){
+        postBox.appendChild(editButt)
+        postBox.appendChild(deleteButt)
+        editDelButtons(editButt, deleteButt, "postedit", blogposts[i])
+        }
         content.appendChild(postBox)
 
     }
@@ -590,7 +688,7 @@ function load_blogpost(blogpost){
 }
 
 
-function load_Add(item, blog){
+function load_Add(item, data){
     
     var content = document.getElementById("content")
     content.innerHTML=""
@@ -601,13 +699,16 @@ function load_Add(item, blog){
     var form = document.createElement("form")
     switch(item){
         case "blog":
-            form.setAttribute("action", "/submit-blog/"+sessionStorage.userID)
+            form.setAttribute("name", "submitBlogForm")
             break;
         case "blogpost":
-            form.setAttribute("action", "/submit-blogpost/"+sessionStorage.userID)
+            form.setAttribute("name", "submitBlogpostForm")            
             break;
         case "blogedit":
-            form.setAttribute("action", "/edit-blogpost/"+blog.id)
+            form.setAttribute("action", "/edit-blog/"+data.id)
+            break;
+        case "postedit":
+            form.setAttribute("name", "editPostForm")
             break;
     }
     form.setAttribute("method", "post")
@@ -628,9 +729,10 @@ function load_Add(item, blog){
     newTitle.setAttribute("name", "title")
     newTitle.setAttribute("size", "80")
     newTitle.setAttribute("id", "newTitle")
-    if(item == "blogedit"){newTitle.setAttribute("value", blog.name)}
+    if(item == "blogedit"){newTitle.setAttribute("value", data.name)}
+    if(item == "postedit"){newTitle.setAttribute("value", data.title)}
 
-    if(item == "blogpost"){
+    if(item == "blogpost" || item == "postedit"){
 
         var messageTextBox = document.createElement("div")
         messageTextBox.setAttribute("class", "container")
@@ -646,6 +748,7 @@ function load_Add(item, blog){
         newMessage.setAttribute("name", "message")
         newMessage.setAttribute("rows", "8")
         newMessage.setAttribute("cols", "80")
+        if(item == "postedit"){newMessage.innerHTML = data.message}
 
         messageTextBox.appendChild(messageText)
         newMessageBox.appendChild(newMessage)
@@ -660,6 +763,18 @@ function load_Add(item, blog){
     var submit = document.createElement("button")
     submit.setAttribute("class", "btn")
     submit.innerHTML="Submit"
+    switch(item){
+        case "blog":
+            submit.setAttribute("onclick", "submit_blog()")
+            break;
+        case "blogpost":
+            submit.setAttribute("onclick", "submit_blogpost()")
+            break;
+        case "postedit":
+            event = "edit_post(" + data.id + ")"
+            submit.setAttribute("onclick", event)
+            break;
+    }
 
     titleTextBox.appendChild(titleText)
     newTitleBox.appendChild(newTitle)
@@ -668,21 +783,16 @@ function load_Add(item, blog){
 
     form.appendChild(titleTextBox)
     form.appendChild(newTitleBox)
-    if (item == "blogpost"){
+    if (item == "blogpost" || item == "postedit"){
         form.appendChild(messageTextBox)
         form.appendChild(newMessageBox)
     }
-    form.appendChild(submitBox)
 
     content.appendChild(form)
+    content.appendChild(submitBox)
     
 }
 
 
 
 window.addEventListener('load', request("/get-user", "user"));
-
-/*            <nav class="navbar" id="navbar" style="background-color:rgb(254, 255, 175)">
-<span><h1 class="container" id="navTitle">Blog engine</h1></span>
-<span class="container" id="navButtons"></span>
-</nav>*/

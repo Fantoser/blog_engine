@@ -70,10 +70,11 @@ def get_blogposts(cursor, blogID):
     data = cursor.fetchall()
     return data
 
+
 @data_manager.connection_handler
 def get_blogpost(cursor, blogID):
     cursor.execute("""SELECT * FROM blogposts
-                    WHERE id = %s;""", (blogID))
+                    WHERE id = %s;""", (blogID,))
     data = cursor.fetchall()
     return data
 
@@ -81,7 +82,7 @@ def get_blogpost(cursor, blogID):
 @data_manager.connection_handler
 def get_answers(cursor, blogpostID):
     cursor.execute("""SELECT * FROM answers
-                    WHERE blogpost_id = %s;""", (blogpostID))
+                    WHERE blogpost_id = %s;""", (blogpostID,))
     data = cursor.fetchall()
     return data
 
@@ -141,6 +142,18 @@ def delete_blog(cursor, blogid):
     cursor.execute("""DELETE FROM blogs
     WHERE id =%s""", (blogid,))
 
+
+@data_manager.connection_handler
+def edit_blogPost(cursor, postid, title, message):
+    cursor.execute("""UPDATE blogposts
+    SET title=%s, message=%s
+    WHERE id =%s""", (title, message, postid))
+
+
+@data_manager.connection_handler
+def delete_blogPost(cursor, postid):
+    cursor.execute("""DELETE FROM blogposts
+    WHERE id =%s""", (postid,)) 
 
 ######################
 

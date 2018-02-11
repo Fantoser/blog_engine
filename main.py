@@ -85,17 +85,17 @@ def get_blogpost(id):
 
 @app.route("/submit-blog/<userid>", methods=["POST"])
 def submit_blog(userid):
-    title = request.form["title"]
+    jsonData = request.get_data()
+    title = eval(jsonData)
     queries.submit_blog(title, userid)
     return redirect("/main")
 
 
 @app.route("/submit-blogpost/<blogid>", methods=["POST"])
 def submit_blogpost(blogid):
-    title = request.form["title"]
-    message = request.form["message"]
-    queries.submit_blogpost(title, message, blogid)
-    url = "/get-blog/" + blogid
+    jsonData = request.get_data()
+    data = eval(jsonData)
+    queries.submit_blogpost(data[0], data[1], blogid)
     return redirect("/main")
 
 
@@ -107,7 +107,7 @@ def test_form():
     return redirect("/main")
 
 
-@app.route("/edit-blogpost/<blogid>", methods=["POST"])
+@app.route("/edit-blog/<blogid>", methods=["POST"])
 def edit_blog(blogid):
     name = request.form["title"]
     queries.edit_blog(name, blogid)
@@ -117,6 +117,20 @@ def edit_blog(blogid):
 @app.route("/delete-blog/<blogid>", methods=["POST"])
 def delete_blog(blogid):
     queries.delete_blog(blogid)
+    return redirect("/main")
+
+
+@app.route("/edit-blogpost/<postid>", methods=["POST"])
+def edit_blogpost(postid):
+    jsonData = request.get_data()
+    data = eval(jsonData)
+    queries.edit_blogPost(postid, data[0], data[1])
+    return redirect("/main")
+
+
+@app.route("/delete-blogpost/<postid>", methods=["POST"])
+def delete_blogpost(postid):
+    queries.delete_blogPost(postid)
     return redirect("/main")
 
 
