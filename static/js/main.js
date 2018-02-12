@@ -204,6 +204,13 @@ function BlogButtons(button, blog) {
 
 function editDelButtons(editbutton, delbutton, item, data){
 
+    if(item == "answeredit"){
+        var answer = data[0]        
+        var textBox = data[1]
+        var editBox = data[2]
+        var submitButt = data[3]
+        var cancelButt = data[4]
+    }
     function editBlog(){
         
         load_Add("blogedit", data)
@@ -215,6 +222,45 @@ function editDelButtons(editbutton, delbutton, item, data){
         load_Add("postedit", data)
                 
     }
+
+    function prepareAnswer(){
+
+        textBox.style.display = "none"
+        editBox.style.display = "block"
+
+        editbutton.style.display = "none"
+        delbutton.style.display = "none"
+
+        submitButt.style.display = "inline-block"
+        cancelButt.style.display = "inline-block"
+        
+        
+    }
+    function cancelAnswer(){
+        
+                textBox.style.display = "block"
+                editBox.style.display = "none"
+        
+                editbutton.style.display = "inline-block"
+                delbutton.style.display = "inline-block"
+        
+                submitButt.style.display = "none"
+                cancelButt.style.display = "none"
+                      
+    }
+    function editAnswer(){
+        
+        url = "/edit-answer/" + answer.id
+        form = "answerForm"+answer.id
+        console.log(form)
+        var message = document.forms[form]["message"].value
+        sendIt(url, JSON.stringify([sessionStorage.blogpostID, sessionStorage.userID, sessionStorage.username, message]))
+
+        var urlString = "/get-blogpost/" + sessionStorage.blogpostID
+        request(urlString, "blogpost")
+                
+    }
+
     switch(item){
         case "blogedit":
             editbutton.addEventListener("click", editBlog);
@@ -222,6 +268,10 @@ function editDelButtons(editbutton, delbutton, item, data){
         case "postedit":
             editbutton.addEventListener("click", editPost);
             break;
+        case "answeredit":
+            editbutton.addEventListener("click", prepareAnswer);
+            cancelButt.addEventListener("click", cancelAnswer);
+            submitButt.addEventListener("click", editAnswer);
     }
 
 
@@ -646,8 +696,54 @@ function load_blogpost(blogpost){
 
             var answerTextBox = document.createElement("div")
             answerTextBox.setAttribute("class", "container")
+            answerTextBox.setAttribute("id", "answerTextBox")
+            answerTextBox.style.display = "block"
 
             var answerText = document.createTextNode(blogpost[1][i].message)
+
+            if(blogpost[1][i].owner_id == sessionStorage.userID){
+
+                var answerForm = document.createElement("form")
+                answerForm.setAttribute("name", "answerForm"+blogpost[1][i].id)
+
+                var answerEditBox = document.createElement("textarea")
+                answerEditBox.setAttribute("class", "container")
+                answerEditBox.setAttribute("id", "answerEditBox")
+                answerEditBox.setAttribute("name", "message")
+                answerEditBox.innerHTML = blogpost[1][i].message
+                answerEditBox.style.display = "none"
+    
+                answerForm.appendChild(answerEditBox)
+
+                //BUTTONS
+                var editButt = document.createElement("div")
+                editButt.setAttribute("class", "btn col rounded-0")
+                editButt.setAttribute("id", "answerEditButt")
+                editButt.innerHTML="Edit"
+                editButt.style.display = "inline-block"
+
+                var deleteButt = document.createElement("div")
+                deleteButt.setAttribute("class", "btn col rounded-0")
+                deleteButt.setAttribute("id", "answerDelButt")
+                deleteButt.innerHTML="Delete"
+                deleteButt.style.display = "inline-block"                
+
+                var submitButt = document.createElement("span")
+                submitButt.setAttribute("class", "btn col rounded-0")
+                submitButt.setAttribute("id", "answerSubmitButt")
+                submitButt.innerHTML="Submit"
+                submitButt.style.display = "none"
+        
+                var cancelButt = document.createElement("span")
+                cancelButt.setAttribute("class", "btn col rounded-0")
+                cancelButt.setAttribute("id", "answerCancelButt")
+                cancelButt.innerHTML="Cancel"
+                cancelButt.style.display = "none"                
+
+
+
+                editDelButtons(editButt, deleteButt, "answeredit", [blogpost[1][i], answerTextBox, answerEditBox, submitButt, cancelButt])
+            }
             
 
             usernameBox.appendChild(username)
@@ -655,8 +751,13 @@ function load_blogpost(blogpost){
             answerTextBox.appendChild(answerText)
             answerBox.appendChild(answerTextBox)
             answersBox.appendChild(answerBox)
-
-
+            if(blogpost[1][i].owner_id == sessionStorage.userID){
+                answerBox.appendChild(answerForm)
+                answerBox.appendChild(editButt)
+                answerBox.appendChild(deleteButt)
+                answerBox.appendChild(submitButt)
+                answerBox.appendChild(cancelButt)
+            }
         }
     }
 
@@ -774,6 +875,9 @@ function load_Add(item, data){
             event = "edit_post(" + data.id + ")"
             submit.setAttribute("onclick", event)
             break;
+        case "answeredit":
+            event = "edit_answer(" + data.id + ")"
+            submit.setAttribute("onclick", event)
     }
 
     titleTextBox.appendChild(titleText)

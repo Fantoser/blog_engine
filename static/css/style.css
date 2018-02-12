@@ -206,14 +206,14 @@ td
     
 }
 
-#postEditButt
+#postEditButt, #answerEditButt, #answerSubmitButt
 {
     width: 100px;
     margin: 10px;
     background-color: rgb(163, 255, 135);
 }
 
- #postDelButt
+ #postDelButt, #answerDelButt, #answerCancelButt
 {
     width: 100px;
     margin: 10px;
@@ -238,7 +238,8 @@ td
 }
 
 #blogpostButton:hover, #sideButt:hover, #sideAddButt:hover,
-#sideEditButt:hover, #sideDelButt:hover, #postEditButt:hover, #postDelButt:hover
+#sideEditButt:hover, #sideDelButt:hover, #postEditButt:hover, #postDelButt:hover,
+#answerEditButt:hover, #answerDelButt:hover, #answerSubmitButt:hover, #answerCancelButt:hover
 {
     text-decoration: underline;
 }
@@ -266,6 +267,7 @@ td
     margin-right: auto;
     margin-bottom: 30px;
 }
+
 
 #answersBox, #newAnswerBox
 {

@@ -134,6 +134,14 @@ def delete_blogpost(postid):
     return redirect("/main")
 
 
+@app.route("/edit-answer/<answerid>", methods=["POST"])
+def edit_answer(answerid):
+    jsonData = request.get_data()
+    data = eval(jsonData)
+    queries.edit_answer(answerid, data[0], data[1], data[2], data[3])
+    return redirect("/main")
+
+
 def main():
     app.secret_key = "ExistenceIsPain"
     app.run(debug=True)

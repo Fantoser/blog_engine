@@ -74,7 +74,8 @@ def get_blogposts(cursor, blogID):
 @data_manager.connection_handler
 def get_blogpost(cursor, blogID):
     cursor.execute("""SELECT * FROM blogposts
-                    WHERE id = %s;""", (blogID,))
+                    WHERE id = %s
+                    ORDER BY id;""", (blogID,))
     data = cursor.fetchall()
     return data
 
@@ -82,7 +83,8 @@ def get_blogpost(cursor, blogID):
 @data_manager.connection_handler
 def get_answers(cursor, blogpostID):
     cursor.execute("""SELECT * FROM answers
-                    WHERE blogpost_id = %s;""", (blogpostID,))
+                    WHERE blogpost_id = %s
+                    ORDER BY id;""", (blogpostID,))
     data = cursor.fetchall()
     return data
 
@@ -153,28 +155,16 @@ def edit_blogPost(cursor, postid, title, message):
 @data_manager.connection_handler
 def delete_blogPost(cursor, postid):
     cursor.execute("""DELETE FROM blogposts
-    WHERE id =%s""", (postid,)) 
+    WHERE id =%s""", (postid,))
+
+
+@data_manager.connection_handler
+def edit_answer(cursor, answerid, blogpostid, userid, username, message):
+    cursor.execute("""UPDATE answers
+    SET blogpost_id=%s, owner_id=%s, username=%s, message=%s
+    WHERE id =%s""", (blogpostid, userid, username, message, answerid))
 
 ######################
-
-@data_manager.connection_handler
-def submit_story(cursor, title, story):
-    cursor.execute("""INSERT INTO question (title, message)
-    VALUES (%s, %s);""", (title, story))
-
-
-@data_manager.connection_handler
-def edit_answer(cursor, ID, message):
-    cursor.execute("""UPDATE answer
-    SET message=%s
-    WHERE id =%s""", (message, ID))
-
-
-@data_manager.connection_handler
-def edit_story(cursor, ID, title, story):
-    cursor.execute("""UPDATE question
-    SET title=%s, message=%s
-    WHERE id =%s""", (title, story, ID))
 
 @data_manager.connection_handler
 def delete_story(cursor, ID):
