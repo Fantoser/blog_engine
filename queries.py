@@ -143,6 +143,11 @@ def edit_blog(cursor, name, blogid):
 def delete_blog(cursor, blogid):
     cursor.execute("""DELETE FROM blogs
     WHERE id =%s""", (blogid,))
+    cursor.execute("""SELECT * FROM blogposts
+                WHERE blog_id = %s;""", (blogid))
+    data = cursor.fetchall()
+    for i in range(len(data)):
+        delete_blogPost(data[i]["id"])
 
 
 @data_manager.connection_handler
@@ -156,6 +161,8 @@ def edit_blogPost(cursor, postid, title, message):
 def delete_blogPost(cursor, postid):
     cursor.execute("""DELETE FROM blogposts
     WHERE id =%s""", (postid,))
+    cursor.execute("""DELETE FROM answers
+    WHERE blogpost_id =%s""", (postid,))
 
 
 @data_manager.connection_handler
@@ -164,9 +171,22 @@ def edit_answer(cursor, answerid, blogpostid, userid, username, message):
     SET blogpost_id=%s, owner_id=%s, username=%s, message=%s
     WHERE id =%s""", (blogpostid, userid, username, message, answerid))
 
-######################
 
 @data_manager.connection_handler
-def delete_story(cursor, ID):
-    cursor.execute("""DELETE FROM question
-    WHERE id =%s""", (ID))
+def delete_answer(cursor, answerid):
+    cursor.execute("""DELETE FROM answers
+    WHERE id =%s""", (answerid,))
+
+
+@data_manager.connection_handler
+def edit_about(cursor, blogid, message):
+    cursor.execute("""UPDATE blogs
+    SET about=%s
+    WHERE id =%s""", (message, blogid))
+
+
+@data_manager.connection_handler
+def edit_contact(cursor, blogid, message):
+    cursor.execute("""UPDATE blogs
+    SET contact=%s
+    WHERE id =%s""", (message, blogid))

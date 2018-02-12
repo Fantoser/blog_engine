@@ -142,6 +142,28 @@ def edit_answer(answerid):
     return redirect("/main")
 
 
+@app.route("/delete-answer/<answerid>", methods=["POST"])
+def delete_answer(answerid):
+    queries.delete_answer(answerid)
+    return redirect("/main")
+
+
+@app.route("/edit-about/<blogid>", methods=["POST"])
+def edit_about(blogid):
+    jsonData = request.get_data()
+    message = eval(jsonData)
+    queries.edit_about(blogid, message)
+    return redirect("/main")
+
+
+@app.route("/edit-contact/<blogid>", methods=["POST"])
+def edit_contact(blogid):
+    jsonData = request.get_data()
+    message = eval(jsonData)
+    queries.edit_contact(blogid, message)
+    return redirect("/main")
+
+
 def main():
     app.secret_key = "ExistenceIsPain"
     app.run(debug=True)

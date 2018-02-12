@@ -206,14 +206,14 @@ td
     
 }
 
-#postEditButt, #answerEditButt, #answerSubmitButt
+#postEditButt, #answerEditButt, #answerSubmitButt, #infoEditButt, #infoSubmitButt
 {
     width: 100px;
     margin: 10px;
     background-color: rgb(163, 255, 135);
 }
 
- #postDelButt, #answerDelButt, #answerCancelButt
+ #postDelButt, #answerDelButt, #answerCancelButt,  #infoDelButt, #infoCancelButt
 {
     width: 100px;
     margin: 10px;
@@ -239,7 +239,8 @@ td
 
 #blogpostButton:hover, #sideButt:hover, #sideAddButt:hover,
 #sideEditButt:hover, #sideDelButt:hover, #postEditButt:hover, #postDelButt:hover,
-#answerEditButt:hover, #answerDelButt:hover, #answerSubmitButt:hover, #answerCancelButt:hover
+#answerEditButt:hover, #answerDelButt:hover, #answerSubmitButt:hover, #answerCancelButt:hover,
+#infoEditButt:hover, #infoSubmitButt:hover, #infoDelButt:hover, #infoCancelButt:hover
 {
     text-decoration: underline;
 }

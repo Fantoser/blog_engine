@@ -81,26 +81,6 @@ function sendAnswer(){
 
 }
 
-function delete_blog(blogid){
-
-    url = "/delete-blog/" + blogid
-
-    sendIt(url, JSON.stringify(blogid))
-
-    var urlString = "/get-blogs"
-    request(urlString, "blogs")
-}
-
-function delete_post(postid){
-    
-    url = "/delete-blogpost/" + postid
-
-    sendIt(url, JSON.stringify(postid))
-
-    var urlString = "/get-blog/" + sessionStorage.blogID
-    request(urlString, "blog")
-}
-
 function edit_post(data){
 
     var title = document.forms["editPostForm"]["title"].value
@@ -204,13 +184,17 @@ function BlogButtons(button, blog) {
 
 function editDelButtons(editbutton, delbutton, item, data){
 
-    if(item == "answeredit"){
-        var answer = data[0]        
+
+    if(item == "answeredit" || item == "about"|| item == "contact"){
+        var text = data[0]        
         var textBox = data[1]
         var editBox = data[2]
         var submitButt = data[3]
         var cancelButt = data[4]
     }
+
+    //EDIT FUNCTIONS
+
     function editBlog(){
         
         load_Add("blogedit", data)
@@ -238,21 +222,20 @@ function editDelButtons(editbutton, delbutton, item, data){
     }
     function cancelAnswer(){
         
-                textBox.style.display = "block"
-                editBox.style.display = "none"
-        
-                editbutton.style.display = "inline-block"
-                delbutton.style.display = "inline-block"
-        
-                submitButt.style.display = "none"
-                cancelButt.style.display = "none"
+        textBox.style.display = "block"
+        editBox.style.display = "none"
+
+        editbutton.style.display = "inline-block"
+        delbutton.style.display = "inline-block"
+
+        submitButt.style.display = "none"
+        cancelButt.style.display = "none"
                       
     }
     function editAnswer(){
         
-        url = "/edit-answer/" + answer.id
-        form = "answerForm"+answer.id
-        console.log(form)
+        url = "/edit-answer/" + text.id
+        form = "answerForm"+text.id
         var message = document.forms[form]["message"].value
         sendIt(url, JSON.stringify([sessionStorage.blogpostID, sessionStorage.userID, sessionStorage.username, message]))
 
@@ -261,36 +244,93 @@ function editDelButtons(editbutton, delbutton, item, data){
                 
     }
 
+    function editAbout(){
+
+        var message = document.forms["infoForm"]["message"].value
+        var url = "/edit-about/" + sessionStorage.blogID
+
+        sendIt(url, JSON.stringify(message))
+
+        Storage["about"] = message
+        textBox.innerHTML = message
+        cancelAnswer()
+
+    }
+
+    function editContact(){
+
+        var message = document.forms["infoForm"]["message"].value
+        var url = "/edit-contact/" + sessionStorage.blogID
+        
+        sendIt(url, JSON.stringify(message))
+
+        Storage["contact"] = message
+        textBox.innerHTML = message
+        cancelAnswer()
+        
+    }
+
+    //DELETE FUNCTIONS
+
+
+    function deleteBlog(){
+
+        url = "/delete-blog/" + data.id
+        
+        sendIt(url, JSON.stringify(data.id))
+    
+        var urlString = "/get-blogs"
+        request(urlString, "blogs")
+                
+    }
+
+    function deletePost(){
+        
+        url = "/delete-blogpost/" + data.id
+        
+        sendIt(url, JSON.stringify(data.id))
+    
+        var urlString = "/get-blog/" + sessionStorage.blogID
+        request(urlString, "blog")
+       
+        
+    }
+
+    function deleteAnswer(){
+
+        url = "/delete-answer/" + answer.id
+
+        sendIt(url, JSON.stringify(answer.id))
+
+        var urlString = "/get-blogpost/" + sessionStorage.blogpostID
+        request(urlString, "blogpost")
+
+    }
+
     switch(item){
         case "blogedit":
             editbutton.addEventListener("click", editBlog);
+            delbutton.addEventListener("click", deleteBlog);
             break;
         case "postedit":
             editbutton.addEventListener("click", editPost);
+            delbutton.addEventListener("click", deletePost);
             break;
         case "answeredit":
             editbutton.addEventListener("click", prepareAnswer);
             cancelButt.addEventListener("click", cancelAnswer);
             submitButt.addEventListener("click", editAnswer);
-    }
-
-
-    function deleteBlog(){
-
-        delete_blog(data.id)
-                
-    }
-    function deletePost(){
-        
-        delete_post(data.id)
-                        
-    }
-    switch(item){
-        case "blogedit":
-            delbutton.addEventListener("click", deleteBlog);
+            delbutton.addEventListener("click", deleteAnswer);
             break;
-        case "postedit":
-            delbutton.addEventListener("click", deletePost);
+        case "about":
+            editbutton.addEventListener("click", prepareAnswer);
+            cancelButt.addEventListener("click", cancelAnswer);
+            submitButt.addEventListener("click", editAbout);
+            break;
+        case "contact":
+            editbutton.addEventListener("click", prepareAnswer);
+            cancelButt.addEventListener("click", cancelAnswer);
+            submitButt.addEventListener("click", editContact);
             break;
     }
 
@@ -441,6 +481,13 @@ function load_blog(blogposts){
     var sideContent = document.getElementById("sideContent")
 
     var sideAddButt = document.getElementById("sideAddButt")
+    if(sideAddButt == null){
+        var myBlogsBox = document.getElementById("myBlogBox")
+        var sideAddButt = document.createElement("div")
+        sideAddButt.setAttribute("class", "btn rounded-0")
+        sideAddButt.setAttribute("id", "sideAddButt")
+        sideContent.insertBefore(sideAddButt, sideContent.firstChild)
+    }
     sideAddButt.innerHTML = "Create New Blogpost"
     if(sessionStorage.ownerID == sessionStorage.userID){
     sideButtons_blogs(sideAddButt, "blogpost")
@@ -590,6 +637,7 @@ function infopage(info){
     var postMessageBox = document.createElement("div")
     postMessageBox.setAttribute("class", "container")        
     postMessageBox.setAttribute("id", "postMessage")
+    postMessageBox.style.display = "block"
 
     if(Storage[info.toLowerCase()] == null){
         var postMessage = document.createTextNode("This page doesn't contain any information")
@@ -597,11 +645,61 @@ function infopage(info){
         var postMessage = document.createTextNode(Storage[info.toLowerCase()])
     }
 
+    if(sessionStorage.ownerID == sessionStorage.userID){
+        var infoForm = document.createElement("form")
+        infoForm.setAttribute("name", "infoForm")
+
+        var infoEditBox = document.createElement("textarea")
+        infoEditBox.setAttribute("class", "container")
+        infoEditBox.setAttribute("id", "answerEditBox")
+        infoEditBox.setAttribute("name", "message")
+        infoEditBox.setAttribute("rows", "10")
+        if(Storage[info.toLowerCase()] != null){infoEditBox.innerHTML = Storage[info.toLowerCase()]}
+        infoEditBox.style.display = "none"
+
+        infoForm.appendChild(infoEditBox)
+
+        //BUTTONS
+        var editButt = document.createElement("div")
+        editButt.setAttribute("class", "btn col rounded-0")
+        editButt.setAttribute("id", "infoEditButt")
+        editButt.innerHTML="Edit"
+        editButt.style.display = "inline-block"
+
+        var deleteButt = document.createElement("div")
+        deleteButt.setAttribute("class", "btn col rounded-0")
+        deleteButt.setAttribute("id", "infoDelButt")
+        deleteButt.innerHTML="Delete"
+        deleteButt.style.display = "inline-block"
+
+        var submitButt = document.createElement("span")
+        submitButt.setAttribute("class", "btn col rounded-0")
+        submitButt.setAttribute("id", "infoSubmitButt")
+        submitButt.innerHTML="Submit"
+        submitButt.style.display = "none"
+
+        var cancelButt = document.createElement("span")
+        cancelButt.setAttribute("class", "btn col rounded-0")
+        cancelButt.setAttribute("id", "infoCancelButt")
+        cancelButt.innerHTML="Cancel"
+        cancelButt.style.display = "none"
+
+
+        editDelButtons(editButt, deleteButt, info.toLowerCase(), [Storage[info.toLowerCase()], postMessageBox, infoEditBox, submitButt, cancelButt])
+    }
+
     postTitleBox.appendChild(postTitle)
     postMessageBox.appendChild(postMessage)
     postBox.appendChild(postTitleBox)
     postBox.appendChild(postMessageBox)
     content.appendChild(postBox)
+    if(sessionStorage.ownerID == sessionStorage.userID){
+        postBox.appendChild(infoForm)
+        postBox.appendChild(editButt)
+        postBox.appendChild(deleteButt)
+        postBox.appendChild(submitButt)
+        postBox.appendChild(cancelButt)
+    }
 }
 
 
@@ -726,7 +824,7 @@ function load_blogpost(blogpost){
                 deleteButt.setAttribute("class", "btn col rounded-0")
                 deleteButt.setAttribute("id", "answerDelButt")
                 deleteButt.innerHTML="Delete"
-                deleteButt.style.display = "inline-block"                
+                deleteButt.style.display = "inline-block"
 
                 var submitButt = document.createElement("span")
                 submitButt.setAttribute("class", "btn col rounded-0")
