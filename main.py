@@ -99,9 +99,7 @@ def submit_blog(userid):
 def submit_blogpost(blogid):
     jsonData = request.get_data()
     data = eval(jsonData)
-    if data[2] != "null":
-        print(data[2])
-    queries.submit_blogpost(data[0], data[1], data[2], blogid)
+    queries.submit_blogpost(data[0], data[1], data[2], blogid, data[3])
     return redirect("/main")
 
 
@@ -115,8 +113,9 @@ def test_form():
 
 @app.route("/edit-blog/<blogid>", methods=["POST"])
 def edit_blog(blogid):
-    name = request.form["title"]
-    queries.edit_blog(name, blogid)
+    jsonData = request.get_data()
+    data = eval(jsonData)
+    queries.edit_blog(data[0], blogid)
     return redirect("/main")
 
 
@@ -130,7 +129,7 @@ def delete_blog(blogid):
 def edit_blogpost(postid):
     jsonData = request.get_data()
     data = eval(jsonData)
-    queries.edit_blogPost(postid, data[0], data[1])
+    queries.edit_blogPost(postid, data[0], data[1], data[2])
     return redirect("/main")
 
 

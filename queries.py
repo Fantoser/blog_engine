@@ -40,6 +40,16 @@ def is_valid_login(cursor, username, password):
         return check_password(password, hashword[0]["password"])
 
 
+@data_manager.connection_handler
+def check_user(cursor, blogID, userID):
+    cursor.execute("SELECT owner_id FROM blogs WHERE id = %s;", (blogID,))
+    ownerID = cursor.fetchall()[0]["owner_id"]
+    if int(ownerID) == int(userID):
+        return True
+    else:
+        return False
+
+
 # Functions for grab datas
 @data_manager.connection_handler
 def get_user(cursor, username):
@@ -121,13 +131,16 @@ def submit_blog(cursor, title, userID):
 
 
 @data_manager.connection_handler
-def submit_blogpost(cursor, title, message, img, blogID):
-    if img != "null":
-        cursor.execute("""INSERT INTO blogposts (title, message, img, blog_id)
-                    VALUES (%s, %s, %s, %s);""", (title, message, img, blogID))
+def submit_blogpost(cursor, title, message, img, blogID, userID):
+    if check_user(blogID, userID):
+        if img != "null":
+            cursor.execute("""INSERT INTO blogposts (title, message, img, blog_id)
+                        VALUES (%s, %s, %s, %s);""", (title, message, img, blogID))
+        else:
+            cursor.execute("""INSERT INTO blogposts (title, message, blog_id)
+                VALUES (%s, %s, %s);""", (title, message, blogID))
     else:
-        cursor.execute("""INSERT INTO blogposts (title, message, blog_id)
-            VALUES (%s, %s, %s);""", (title, message, blogID))
+        return print("ERROR")
 
 
 
@@ -156,10 +169,15 @@ def delete_blog(cursor, blogid):
 
 
 @data_manager.connection_handler
-def edit_blogPost(cursor, postid, title, message):
-    cursor.execute("""UPDATE blogposts
-    SET title=%s, message=%s
-    WHERE id =%s""", (title, message, postid))
+def edit_blogPost(cursor, postid, title, message, userID):
+    cursor.execute("SELECT blog_id FROM blogposts WHERE id=%s;", (postid,))
+    blogID = cursor.fetchall()[0]["blog_id"]
+    if check_user(blogID, userID):
+        cursor.execute("""UPDATE blogposts
+        SET title=%s, message=%s
+        WHERE id =%s""", (title, message, postid))
+    else:
+        return "ERROR"
 
 
 @data_manager.connection_handler
@@ -172,9 +190,14 @@ def delete_blogPost(cursor, postid):
 
 @data_manager.connection_handler
 def edit_answer(cursor, answerid, blogpostid, userid, username, message):
-    cursor.execute("""UPDATE answers
-    SET blogpost_id=%s, owner_id=%s, username=%s, message=%s
-    WHERE id =%s""", (blogpostid, userid, username, message, answerid))
+    cursor.execute("SELECT blog_id FROM blogposts WHERE id=%s;", (blogpostid,))
+    blogID = cursor.fetchall()[0]["blog_id"]
+    if check_user(blogID, userid):
+        cursor.execute("""UPDATE answers
+        SET blogpost_id=%s, owner_id=%s, username=%s, message=%s
+        WHERE id =%s""", (blogpostid, userid, username, message, answerid))
+    else:
+        return "ERROR"
 
 
 @data_manager.connection_handler

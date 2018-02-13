@@ -66,12 +66,26 @@ function submit_blogpost(){
     
         url = "/submit-blogpost/" + sessionStorage.blogID
     
-        sendIt(url, JSON.stringify([title, message, name]))
+        sendIt(url, JSON.stringify([title, message, name, sessionStorage.userID]))
 
     
         var urlString = "/get-blog/" + sessionStorage.blogID
         request(urlString, "blog")
     }
+
+function edit_blog(data){
+
+    var title = document.forms["editBlogForm"]["title"].value
+
+    url = "/edit-blog/" + data
+
+    sendIt(url, JSON.stringify([title, sessionStorage.userID]))
+
+    var urlString = "/get-blogs"
+    request(urlString, "blogs")
+
+}
+
 
 function sendAnswer(){
 
@@ -94,7 +108,7 @@ function edit_post(data){
 
     url = "/edit-blogpost/" + data
 
-    sendIt(url, JSON.stringify([title, message]))
+    sendIt(url, JSON.stringify([title, message, sessionStorage.userID]))
 
     var urlString = "/get-blogpost/" + data
     request(urlString, "blogpost")
@@ -304,9 +318,9 @@ function editDelButtons(editbutton, delbutton, item, data){
 
     function deleteAnswer(){
 
-        url = "/delete-answer/" + answer.id
+        url = "/delete-answer/" + data[0].id
 
-        sendIt(url, JSON.stringify(answer.id))
+        sendIt(url, JSON.stringify(data[0].id))
 
         var urlString = "/get-blogpost/" + sessionStorage.blogpostID
         request(urlString, "blogpost")
@@ -377,6 +391,12 @@ function submitButtons(button) {
 //=============LOADS==================
 
 function load_blogs(blogs){
+
+    var navTitle = document.getElementById("navTitle")
+    navTitle.innerHTML="Blog engine"
+
+    var navButtons = document.getElementById("navButtons")
+    navButtons.innerHTML = ""
 
     //Sidebar
 
@@ -705,7 +725,7 @@ function infopage(info){
         deleteButt.setAttribute("class", "btn col rounded-0")
         deleteButt.setAttribute("id", "infoDelButt")
         deleteButt.innerHTML="Delete"
-        deleteButt.style.display = "inline-block"
+        deleteButt.style.display = "none"
 
         var submitButt = document.createElement("span")
         submitButt.setAttribute("class", "btn col rounded-0")
@@ -731,7 +751,6 @@ function infopage(info){
     if(sessionStorage.ownerID == sessionStorage.userID){
         postBox.appendChild(infoForm)
         postBox.appendChild(editButt)
-        postBox.appendChild(deleteButt)
         postBox.appendChild(submitButt)
         postBox.appendChild(cancelButt)
     }
@@ -923,7 +942,7 @@ function load_blogpost(blogpost){
 
 
 function load_Add(item, data){
-    
+
     var content = document.getElementById("content")
     content.innerHTML=""
 
@@ -936,9 +955,10 @@ function load_Add(item, data){
             form.setAttribute("name", "submitBlogForm")
             break;
         case "blogpost":
-            form.setAttribute("name", "submitBlogpostForm")            
+            form.setAttribute("name", "submitBlogpostForm")
             break;
         case "blogedit":
+            form.setAttribute("name", "editBlogForm")        
             form.setAttribute("action", "/edit-blog/"+data.id)
             break;
         case "postedit":
@@ -1014,6 +1034,10 @@ function load_Add(item, data){
     switch(item){
         case "blog":
             submit.setAttribute("onclick", "submit_blog()")
+            break;
+        case "blogedit":
+            event = "edit_blog(" + data.id + ")"
+            submit.setAttribute("onclick", event)
             break;
         case "blogpost":
             submit.setAttribute("onclick", "submit_blogpost()")
