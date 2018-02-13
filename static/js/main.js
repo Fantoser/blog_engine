@@ -390,8 +390,17 @@ function load_blogs(blogs){
     var sideButtText = document.createTextNode("Create New Blog")
 
     var blogsButt = document.createElement("div")
-    sideAddButt.setAttribute("class", "btn rounded-0")
-    sideAddButt.setAttribute("id", "blogsButt")
+    blogsButt.setAttribute("class", "btn rounded-0")
+    blogsButt.setAttribute("id", "blogsButt")
+
+    var blogsButtText = document.createTextNode("Blogs")
+
+    var logOffButt = document.createElement("div")
+    logOffButt.setAttribute("class", "btn rounded-0")
+    logOffButt.setAttribute("id", "logOffButt")
+    logOffButt.setAttribute("onclick", "location.href='/'")
+
+    var logOffText = document.createTextNode("Log off")
 
     myBlogsBox = document.createElement("a")
     myBlogsBox.setAttribute("id", "myBlogsBox")
@@ -400,9 +409,25 @@ function load_blogs(blogs){
     
 
     sideAddButt.appendChild(sideButtText)
+    blogsButt.appendChild(blogsButtText)
+    logOffButt.appendChild(logOffText)
     sideContent.appendChild(sideAddButt)
+    sideContent.appendChild(blogsButt)
+    sideContent.appendChild(logOffButt)
     myBlogsBox.appendChild(myBlogsText)
     sideContent.appendChild(myBlogsBox)
+
+    function blogsButtEvent(){
+        request("/get-blogs", "blogs")
+    }
+    blogsButt.addEventListener("click", blogsButtEvent);
+
+    /*
+    function logOffButtEvent(){
+        request("/logoff", "logoff")
+    }
+    logOffButt.addEventListener("click", logOffButtEvent);
+    */
 
     sideButtons_blogs(sideAddButt, "blog")
 

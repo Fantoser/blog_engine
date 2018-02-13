@@ -173,15 +173,24 @@ td
     transition: 0.5s;
 }
 
-#sideButt, #sideAddButt
+#sideButt, #sideAddButt, #blogsButt, #logOffButt
 {
-    background-color: #FFFD87;
     padding: 10px;
     margin-top: 20px;
     text-decoration: none;
     font-size: 25px;
     display: block;
     transition: 0.5s;
+}
+
+#sideButt, #sideAddButt, #blogsButt
+{
+    background-color: #FFFD87;
+}
+
+#logOffButt
+{
+    background-color: rgb(255, 135, 135);
 }
 
 #optBox
@@ -237,7 +246,7 @@ td
     font-weight: bold;
 }
 
-#blogpostButton:hover, #sideButt:hover, #sideAddButt:hover,
+#blogpostButton:hover, #sideButt:hover, #sideAddButt:hover, #blogsButt:hover, #logOffButt:hover,
 #sideEditButt:hover, #sideDelButt:hover, #postEditButt:hover, #postDelButt:hover,
 #answerEditButt:hover, #answerDelButt:hover, #answerSubmitButt:hover, #answerCancelButt:hover,
 #infoEditButt:hover, #infoSubmitButt:hover, #infoDelButt:hover, #infoCancelButt:hover
