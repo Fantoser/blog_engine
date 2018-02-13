@@ -82,7 +82,7 @@ ALTER TABLE ONLY answers ALTER COLUMN id SET DEFAULT nextval('answer_id_seq'::re
 INSERT INTO users VALUES (1, 'Mr.Meeseeks', '$2b$12$RL40kkbIGwa2DI2TG/w3yev4gdlhWjJ1jqwcmM7sYLKdSw9n9cH9e');
 INSERT INTO users VALUES (2, 'Catlady125', '$2b$12$X387MF65xIcP8CRm9tL4Z.UwUfUVNk8ucsfuFM3iQXHTgz1tHS5F.');
 
-SELECT pg_catalog.setval('users_id_seq', 1, true);
+SELECT pg_catalog.setval('users_id_seq', 2, true);
 
 INSERT INTO blogs VALUES (1, 'Random Pictures', 1, 'My name is Jeff!', NULL, NULL);
 INSERT INTO blogs VALUES (2, 'Cats!', 2, 'I love cats!', NULL, NULL);
