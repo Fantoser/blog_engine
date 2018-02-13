@@ -121,9 +121,14 @@ def submit_blog(cursor, title, userID):
 
 
 @data_manager.connection_handler
-def submit_blogpost(cursor, title, message, blogID):
-    cursor.execute("""INSERT INTO blogposts (title, message, blog_id)
-                    VALUES (%s, %s, %s);""", (title, message, blogID))
+def submit_blogpost(cursor, title, message, img, blogID):
+    if img != "null":
+        cursor.execute("""INSERT INTO blogposts (title, message, img, blog_id)
+                    VALUES (%s, %s, %s, %s);""", (title, message, img, blogID))
+    else:
+        cursor.execute("""INSERT INTO blogposts (title, message, blog_id)
+            VALUES (%s, %s, %s);""", (title, message, blogID))
+
 
 
 @data_manager.connection_handler

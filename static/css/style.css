@@ -261,7 +261,7 @@ td
     font-size: 20px;
 }
 
-#imageBox img, #newTitleBox input, #newPostBox textarea, #newAnswerBox textarea
+#imageBox img, #newTitleBox input, #newPostBox textarea, #newAnswerBox textarea, #pic *
 {
     display: block;
     margin-left: auto;
@@ -269,6 +269,10 @@ td
     margin-bottom: 30px;
 }
 
+.dz-clickable
+{
+    width: 40%;
+}
 
 #answersBox, #newAnswerBox
 {

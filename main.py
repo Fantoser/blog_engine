@@ -1,7 +1,11 @@
+import os
 from flask import Flask, render_template, redirect, request, session, url_for, send_from_directory, json
 from werkzeug.utils import secure_filename
 import queries
-app = Flask(__name__, static_url_path='/static')
+app = Flask(__name__)
+
+UPLOAD_FOLDER = os.path.basename('./static')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 def login_required(func):
@@ -95,7 +99,9 @@ def submit_blog(userid):
 def submit_blogpost(blogid):
     jsonData = request.get_data()
     data = eval(jsonData)
-    queries.submit_blogpost(data[0], data[1], blogid)
+    if data[2] != "null":
+        print(data[2])
+    queries.submit_blogpost(data[0], data[1], data[2], blogid)
     return redirect("/main")
 
 
@@ -161,6 +167,14 @@ def edit_contact(blogid):
     jsonData = request.get_data()
     message = eval(jsonData)
     queries.edit_contact(blogid, message)
+    return redirect("/main")
+
+
+@app.route("/upload", methods=["POST"])
+def upload():
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    file.save(os.path.join('./static/pics', filename))
     return redirect("/main")
 
 

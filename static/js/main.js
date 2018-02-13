@@ -58,10 +58,16 @@ function submit_blogpost(){
     
         var title = document.forms["submitBlogpostForm"]["title"].value
         var message = document.forms["submitBlogpostForm"]["message"].value
+        if(document.getElementsByClassName("dz-filename").length > 0){
+        var name = document.getElementsByClassName("dz-filename")[0].firstChild.innerHTML
+        }else{
+        var name = "null"
+        }
     
         url = "/submit-blogpost/" + sessionStorage.blogID
     
-        sendIt(url, JSON.stringify([title, message]))
+        sendIt(url, JSON.stringify([title, message, name]))
+
     
         var urlString = "/get-blog/" + sessionStorage.blogID
         request(urlString, "blog")
@@ -382,6 +388,10 @@ function load_blogs(blogs){
     sideAddButt.setAttribute("id", "sideAddButt")
 
     var sideButtText = document.createTextNode("Create New Blog")
+
+    var blogsButt = document.createElement("div")
+    sideAddButt.setAttribute("class", "btn rounded-0")
+    sideAddButt.setAttribute("id", "blogsButt")
 
     myBlogsBox = document.createElement("a")
     myBlogsBox.setAttribute("id", "myBlogsBox")
@@ -911,6 +921,7 @@ function load_Add(item, data){
             break;
     }
     form.setAttribute("method", "post")
+    form.setAttribute("enctype", "multipart/form-data")
     
 
     var titleTextBox = document.createElement("div")
@@ -931,7 +942,20 @@ function load_Add(item, data){
     if(item == "blogedit"){newTitle.setAttribute("value", data.name)}
     if(item == "postedit"){newTitle.setAttribute("value", data.title)}
 
+
     if(item == "blogpost" || item == "postedit"){
+        
+        var img = document.createElement("div")
+        img.setAttribute("id", "pic")
+        img.setAttribute("class", "container dropzone")
+
+        /*
+        var pic = document.createElement("input")
+        pic.setAttribute("type", "file")
+        pic.setAttribute("accept", "image/*")
+        pic.setAttribute("name", "pic")
+        pic.setAttribute("id", "lefile")
+        */
 
         var messageTextBox = document.createElement("div")
         messageTextBox.setAttribute("class", "container")
@@ -986,13 +1010,17 @@ function load_Add(item, data){
     form.appendChild(titleTextBox)
     form.appendChild(newTitleBox)
     if (item == "blogpost" || item == "postedit"){
+        //form.appendChild(pic)
+        form.appendChild(img)
         form.appendChild(messageTextBox)
         form.appendChild(newMessageBox)
     }
-
     content.appendChild(form)
+    if (item == "blogpost" ){
+        var myDropzone = new Dropzone("div#pic", { url: "/upload"})
+    }
     content.appendChild(submitBox)
-    
+
 }
 
 
