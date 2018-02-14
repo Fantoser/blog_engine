@@ -227,14 +227,20 @@ def delete_answer(cursor, answerid, userID):
 
 
 @data_manager.connection_handler
-def edit_about(cursor, blogid, message):
-    cursor.execute("""UPDATE blogs
-    SET about=%s
-    WHERE id =%s""", (message, blogid))
+def edit_about(cursor, blogid, message, userID):
+    if check_blog_ownership(blogid, userID):
+        cursor.execute("""UPDATE blogs
+        SET about=%s
+        WHERE id =%s""", (message, blogid))
+    else:
+        return "ERROR"
 
 
 @data_manager.connection_handler
-def edit_contact(cursor, blogid, message):
-    cursor.execute("""UPDATE blogs
-    SET contact=%s
-    WHERE id =%s""", (message, blogid))
+def edit_contact(cursor, blogid, message, userID):
+    if check_blog_ownership(blogid, userID):
+        cursor.execute("""UPDATE blogs
+        SET contact=%s
+        WHERE id =%s""", (message, blogid))
+    else:
+        return "ERROR"

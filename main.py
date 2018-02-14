@@ -157,7 +157,7 @@ def delete_answer(answerid):
 def edit_about(blogid):
     jsonData = request.get_data()
     message = eval(jsonData)
-    queries.edit_about(blogid, message)
+    queries.edit_about(blogid, message, session["id"])
     return redirect("/main")
 
 
@@ -165,7 +165,7 @@ def edit_about(blogid):
 def edit_contact(blogid):
     jsonData = request.get_data()
     message = eval(jsonData)
-    queries.edit_contact(blogid, message)
+    queries.edit_contact(blogid, message, session["id"])
     return redirect("/main")
 
 
