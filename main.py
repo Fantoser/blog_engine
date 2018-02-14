@@ -99,15 +99,15 @@ def submit_blog(userid):
 def submit_blogpost(blogid):
     jsonData = request.get_data()
     data = eval(jsonData)
-    queries.submit_blogpost(data[0], data[1], data[2], blogid, data[3])
+    queries.submit_blogpost(data[0], data[1], data[2], blogid, session["id"])
     return redirect("/main")
 
 
-@app.route("/test-form", methods=["POST"])
-def test_form():
+@app.route("/submit-answer", methods=["POST"])
+def submit_answer():
     jsonData = request.get_data()
     data = eval(jsonData)
-    queries.submit_answer(data[0], data[1], data[2], data[3])
+    queries.submit_answer(data[0], session["id"], data[2], data[3])
     return redirect("/main")
 
 

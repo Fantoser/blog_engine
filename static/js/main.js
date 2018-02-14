@@ -94,7 +94,7 @@ function sendAnswer(){
     var username = sessionStorage.username
     var message = document.forms["answerForm"]["message"].value
 
-    sendIt("/test-form", JSON.stringify([blogpostID, userid, username, message]))
+    sendIt("/submit-answer", JSON.stringify([blogpostID, userid, username, message]))
 
     var urlString = "/get-blogpost/" + blogpostID
     request(urlString, "blogpost")
