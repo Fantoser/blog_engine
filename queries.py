@@ -53,9 +53,9 @@ def check_user(cursor, blogID, userID):
 # Functions for grab datas
 @data_manager.connection_handler
 def get_user(cursor, username):
-    cursor.execute("SELECT id, username FROM users WHERE username = (%s);", (username,))
+    cursor.execute("SELECT id FROM users WHERE username = (%s);", (username,))
     data = cursor.fetchall()
-    return data[0]
+    return data[0]["id"]
 
 
 @data_manager.connection_handler
