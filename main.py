@@ -19,7 +19,6 @@ def login_required(func):
 @app.route("/", methods=["GET", "POST"])
 def index():
     session.pop("username", None)
-    session.pop("id", None)
     state = "login"
     if request.method == "POST":
         state = "register"
@@ -32,7 +31,6 @@ def login():
     password = request.form["password"]
     if queries.is_valid_login(username, password):
         session["username"] = request.form["username"]
-        session["id"] = queries.get_user(session["username"])
         return redirect("/main")
     else:
         message = "Username/Password is incorrect"
@@ -93,7 +91,7 @@ def get_blogpost(id):
 def submit_blog(userid):
     jsonData = request.get_data()
     title = eval(jsonData)
-    queries.submit_blog(title, session["id"])
+    queries.submit_blog(title, userid)
     return redirect("/main")
 
 
