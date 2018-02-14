@@ -121,7 +121,7 @@ def edit_blog(blogid):
 
 @app.route("/delete-blog/<blogid>", methods=["POST"])
 def delete_blog(blogid):
-    queries.delete_blog(blogid)
+    queries.delete_blog(blogid, session["id"])
     return redirect("/main")
 
 

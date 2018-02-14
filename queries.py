@@ -41,7 +41,7 @@ def is_valid_login(cursor, username, password):
 
 
 @data_manager.connection_handler
-def check_user(cursor, blogID, userID):
+def check_blog_ownnership(cursor, blogID, userID):
     cursor.execute("SELECT owner_id FROM blogs WHERE id = %s;", (blogID,))
     ownerID = cursor.fetchall()[0]["owner_id"]
     if int(ownerID) == int(userID):
@@ -132,7 +132,7 @@ def submit_blog(cursor, title, userID):
 
 @data_manager.connection_handler
 def submit_blogpost(cursor, title, message, img, blogID, userID):
-    if check_user(blogID, userID):
+    if check_blog_ownnership(blogID, userID):
         if img != "null":
             cursor.execute("""INSERT INTO blogposts (title, message, img, blog_id)
                         VALUES (%s, %s, %s, %s);""", (title, message, img, blogID))
@@ -152,7 +152,7 @@ def submit_answer(cursor, blogpostid, userid, username, message):
 
 @data_manager.connection_handler
 def edit_blog(cursor, name, blogid, userID):
-    if check_user(cursor, blogid, session["id"]):
+    if check_blog_ownnership(cursor, blogid, userID):
         cursor.execute("""UPDATE blogs
         SET name=%s
         WHERE id =%s""", (name, blogid))
@@ -161,21 +161,24 @@ def edit_blog(cursor, name, blogid, userID):
 
 
 @data_manager.connection_handler
-def delete_blog(cursor, blogid):
-    cursor.execute("""DELETE FROM blogs
-    WHERE id =%s""", (blogid,))
-    cursor.execute("""SELECT * FROM blogposts
-                WHERE blog_id = %s;""", (blogid))
-    data = cursor.fetchall()
-    for i in range(len(data)):
-        delete_blogPost(data[i]["id"])
+def delete_blog(cursor, blogid, userID):
+    if check_blog_ownnership(cursor, blogid, userID):
+        cursor.execute("""DELETE FROM blogs
+        WHERE id =%s""", (blogid,))
+        cursor.execute("""SELECT * FROM blogposts
+                    WHERE blog_id = %s;""", (blogid))
+        data = cursor.fetchall()
+        for i in range(len(data)):
+            delete_blogPost(data[i]["id"])
+    else:
+        return "ERROR"
 
 
 @data_manager.connection_handler
 def edit_blogPost(cursor, postid, title, message, userID):
     cursor.execute("SELECT blog_id FROM blogposts WHERE id=%s;", (postid,))
     blogID = cursor.fetchall()[0]["blog_id"]
-    if check_user(blogID, userID):
+    if check_blog_ownnership(blogID, userID):
         cursor.execute("""UPDATE blogposts
         SET title=%s, message=%s
         WHERE id =%s""", (title, message, postid))
