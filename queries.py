@@ -50,6 +50,16 @@ def check_blog_ownnership(cursor, blogID, userID):
         return False
 
 
+@data_manager.connection_handler
+def check_answer_ownnership(cursor, answerID, userID):
+    cursor.execute("SELECT owner_id FROM answers WHERE id = %s;", (answerID,))
+    ownerID = cursor.fetchall()[0]["owner_id"]
+    if int(ownerID) == int(userID):
+        return True
+    else:
+        return False
+
+
 # Functions for grab datas
 @data_manager.connection_handler
 def get_user(cursor, username):
