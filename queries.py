@@ -41,7 +41,7 @@ def is_valid_login(cursor, username, password):
 
 
 @data_manager.connection_handler
-def check_blog_ownnership(cursor, blogID, userID):
+def check_blog_ownership(cursor, blogID, userID):
     cursor.execute("SELECT owner_id FROM blogs WHERE id = %s;", (blogID,))
     ownerID = cursor.fetchall()[0]["owner_id"]
     if int(ownerID) == int(userID):
@@ -51,7 +51,7 @@ def check_blog_ownnership(cursor, blogID, userID):
 
 
 @data_manager.connection_handler
-def check_answer_ownnership(cursor, answerID, userID):
+def check_answer_ownership(cursor, answerID, userID):
     cursor.execute("SELECT owner_id FROM answers WHERE id = %s;", (answerID,))
     ownerID = cursor.fetchall()[0]["owner_id"]
     if int(ownerID) == int(userID):
@@ -142,7 +142,7 @@ def submit_blog(cursor, title, userID):
 
 @data_manager.connection_handler
 def submit_blogpost(cursor, title, message, img, blogID, userID):
-    if check_blog_ownnership(blogID, userID):
+    if check_blog_ownership(blogID, userID):
         if img != "null":
             cursor.execute("""INSERT INTO blogposts (title, message, img, blog_id)
                         VALUES (%s, %s, %s, %s);""", (title, message, img, blogID))
@@ -162,7 +162,7 @@ def submit_answer(cursor, blogpostid, userid, username, message):
 
 @data_manager.connection_handler
 def edit_blog(cursor, name, blogid, userID):
-    if check_blog_ownnership(cursor, blogid, userID):
+    if check_blog_ownership(blogid, userID):
         cursor.execute("""UPDATE blogs
         SET name=%s
         WHERE id =%s""", (name, blogid))
@@ -172,7 +172,7 @@ def edit_blog(cursor, name, blogid, userID):
 
 @data_manager.connection_handler
 def delete_blog(cursor, blogid, userID):
-    if check_blog_ownnership(cursor, blogid, userID):
+    if check_blog_ownership(blogid, userID):
         cursor.execute("""DELETE FROM blogs
         WHERE id =%s""", (blogid,))
         cursor.execute("""SELECT * FROM blogposts
@@ -188,7 +188,7 @@ def delete_blog(cursor, blogid, userID):
 def edit_blogPost(cursor, postid, title, message, userID):
     cursor.execute("SELECT blog_id FROM blogposts WHERE id=%s;", (postid,))
     blogID = cursor.fetchall()[0]["blog_id"]
-    if check_blog_ownnership(blogID, userID):
+    if check_blog_ownership(blogID, userID):
         cursor.execute("""UPDATE blogposts
         SET title=%s, message=%s
         WHERE id =%s""", (title, message, postid))
@@ -198,7 +198,7 @@ def edit_blogPost(cursor, postid, title, message, userID):
 
 @data_manager.connection_handler
 def delete_blogPost(cursor, postid, userID):
-    if check_blog_ownnership(cursor, blogid, userID):
+    if check_blog_ownership(blogid, userID):
         cursor.execute("""DELETE FROM blogposts
         WHERE id =%s""", (postid,))
         cursor.execute("""DELETE FROM answers
@@ -208,21 +208,22 @@ def delete_blogPost(cursor, postid, userID):
 
 
 @data_manager.connection_handler
-def edit_answer(cursor, answerid, blogpostid, userid, username, message):
-    cursor.execute("SELECT blog_id FROM blogposts WHERE id=%s;", (blogpostid,))
-    blogID = cursor.fetchall()[0]["blog_id"]
-    if check_user(blogID, userid):
+def edit_answer(cursor, answerid, blogpostid, userID, username, message):
+    if check_answer_ownership(answerid, userID):
         cursor.execute("""UPDATE answers
         SET blogpost_id=%s, owner_id=%s, username=%s, message=%s
-        WHERE id =%s""", (blogpostid, userid, username, message, answerid))
+        WHERE id =%s""", (blogpostid, userID, username, message, answerid))
     else:
         return "ERROR"
 
 
 @data_manager.connection_handler
-def delete_answer(cursor, answerid):
-    cursor.execute("""DELETE FROM answers
-    WHERE id =%s""", (answerid,))
+def delete_answer(cursor, answerid, userID):
+    if check_answer_ownership(answerid, userID):
+        cursor.execute("""DELETE FROM answers
+        WHERE id =%s""", (answerid,))
+    else:
+        return "ERROR"
 
 
 @data_manager.connection_handler
