@@ -115,7 +115,7 @@ def submit_answer():
 def edit_blog(blogid):
     jsonData = request.get_data()
     data = eval(jsonData)
-    queries.edit_blog(data[0], blogid)
+    queries.edit_blog(data[0], blogid, session["id"])
     return redirect("/main")
 
 

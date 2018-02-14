@@ -151,10 +151,13 @@ def submit_answer(cursor, blogpostid, userid, username, message):
 
 
 @data_manager.connection_handler
-def edit_blog(cursor, name, blogid):
-    cursor.execute("""UPDATE blogs
-    SET name=%s
-    WHERE id =%s""", (name, blogid))
+def edit_blog(cursor, name, blogid, userID):
+    if check_user(cursor, blogid, session["id"]):
+        cursor.execute("""UPDATE blogs
+        SET name=%s
+        WHERE id =%s""", (name, blogid))
+    else:
+        return "ERROR"
 
 
 @data_manager.connection_handler
