@@ -129,13 +129,13 @@ def delete_blog(blogid):
 def edit_blogpost(postid):
     jsonData = request.get_data()
     data = eval(jsonData)
-    queries.edit_blogPost(postid, data[0], data[1], data[2])
+    queries.edit_blogPost(postid, data[0], data[1], session["id"])
     return redirect("/main")
 
 
 @app.route("/delete-blogpost/<postid>", methods=["POST"])
-def delete_blogpost(postid):
-    queries.delete_blogPost(postid)
+def delete_blogpost(postid, userID):
+    queries.delete_blogPost(postid, session["id"])
     return redirect("/main")
 
 

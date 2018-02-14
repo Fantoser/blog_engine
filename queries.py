@@ -187,11 +187,14 @@ def edit_blogPost(cursor, postid, title, message, userID):
 
 
 @data_manager.connection_handler
-def delete_blogPost(cursor, postid):
-    cursor.execute("""DELETE FROM blogposts
-    WHERE id =%s""", (postid,))
-    cursor.execute("""DELETE FROM answers
-    WHERE blogpost_id =%s""", (postid,))
+def delete_blogPost(cursor, postid, userID):
+    if check_blog_ownnership(cursor, blogid, userID):
+        cursor.execute("""DELETE FROM blogposts
+        WHERE id =%s""", (postid,))
+        cursor.execute("""DELETE FROM answers
+        WHERE blogpost_id =%s""", (postid,))
+    else:
+        return "ERROR"
 
 
 @data_manager.connection_handler
